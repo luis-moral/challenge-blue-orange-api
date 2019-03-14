@@ -1,4 +1,4 @@
-package es.molabs.challengeblueorangeapi;
+package es.molabs.boapi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
