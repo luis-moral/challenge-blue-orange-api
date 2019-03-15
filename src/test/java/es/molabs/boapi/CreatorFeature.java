@@ -34,7 +34,7 @@ public class CreatorFeature {
 	private static final Creator JOHN = new Creator();
 
 	@Value("${endpoint.creator.path}")
-	private String creatorsEndpoint;
+	private String creatorsPath;
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -74,7 +74,7 @@ public class CreatorFeature {
 	private void assertCreators(Map<String, String> filters, List<String> sorting, Creator...expectedCreators) {
 		webTestClient
 			.get()
-				.uri(builder -> builder.path(creatorsEndpoint).queryParams(toQueryParams(builder, filters, sorting)).build())
+				.uri(builder -> builder.path(creatorsPath).queryParams(toQueryParams(builder, filters, sorting)).build())
 			.exchange()
 				.expectStatus()
 					.isOk()
@@ -82,7 +82,7 @@ public class CreatorFeature {
 				.consumeWith(response ->
 					Assertions
 						.assertThat(response.getResponseBody())
-						.containsSequence(CHARLIE, MAGGIE, JOHN)
+						.containsSequence(expectedCreators)
 				);
 	}
 
