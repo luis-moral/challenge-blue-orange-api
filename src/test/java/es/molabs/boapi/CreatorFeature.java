@@ -86,7 +86,7 @@ public class CreatorFeature {
 				);
 	}
 
-	public MultiValueMap toQueryParams(UriBuilder uriBuilder, Map<String, String> filters, List<String> sorting) {
+	private MultiValueMap toQueryParams(UriBuilder uriBuilder, Map<String, String> filters, List<String> sorting) {
 		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
 		if (filters != null) {
