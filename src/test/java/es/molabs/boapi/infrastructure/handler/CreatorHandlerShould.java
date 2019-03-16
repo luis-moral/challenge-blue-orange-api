@@ -45,7 +45,7 @@ public class CreatorHandlerShould {
     public void setUp() {
         Mockito
             .when(queryMapper.from(Mockito.any()))
-            .thenReturn(new FindCreatorQuery("1", "Some Name", System.currentTimeMillis(), 5, 6, "", null));
+            .thenReturn(new FindCreatorQuery("1", "Some Name", "", "5", "6", "", null));
 
         Mockito
             .when(creatorService.findCreators(Mockito.any()))

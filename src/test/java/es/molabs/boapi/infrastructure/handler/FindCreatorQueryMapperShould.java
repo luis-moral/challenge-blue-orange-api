@@ -1,11 +1,14 @@
 package es.molabs.boapi.infrastructure.handler;
 
 import es.molabs.boapi.application.FindCreatorQuery;
+import es.molabs.boapi.application.SortQuery;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.Arrays;
 
 public class FindCreatorQueryMapperShould {
 
@@ -32,6 +35,7 @@ public class FindCreatorQueryMapperShould {
         map.set("comics", comics);
         map.set("series", series);
         map.set("notes", notes);
+        map.put("orderBy", Arrays.asList("id", "-comics", "series"));
 
         FindCreatorQuery query = mapper.from(map);
 
@@ -58,5 +62,19 @@ public class FindCreatorQueryMapperShould {
         Assertions
             .assertThat(query.getNotes())
             .isEqualTo(notes);
+
+        assertOrder("id", SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(0));
+        assertOrder("comics", SortQuery.SortType.Descending, query.getSortQuery().getFields().get(1));
+        assertOrder("series", SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(2));
+    }
+
+    private void assertOrder(String expectedField, SortQuery.SortType expectedType, SortQuery.SortQueryField field) {
+        Assertions
+            .assertThat(field.getField())
+            .isEqualTo(expectedField);
+
+        Assertions
+            .assertThat(field.getType())
+            .isEqualTo(expectedType);
     }
 }

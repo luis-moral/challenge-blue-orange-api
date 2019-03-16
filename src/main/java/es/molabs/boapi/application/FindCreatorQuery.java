@@ -1,60 +1,58 @@
 package es.molabs.boapi.application;
 
-import java.util.Optional;
-
 public class FindCreatorQuery {
 
-    private final Optional<String> id;
-    private final Optional<String> fullName;
-    private final Optional<Long> modified;
-    private final Optional<Integer> comics;
-    private final Optional<Integer> series;
-    private final Optional<String> notes;
-    private final Optional<SortQuery> sortQuery;
+    private final String id;
+    private final String fullName;
+    private final String modified;
+    private final String comics;
+    private final String series;
+    private final String notes;
+    private final SortQuery sortQuery;
 
     public FindCreatorQuery(
         String id,
         String fullName,
-        Long modified,
-        Integer comics,
-        Integer series,
+        String modified,
+        String comics,
+        String series,
         String notes,
         SortQuery sortQuery
     ) {
-        this.id = Optional.ofNullable(id);
-        this.fullName = Optional.ofNullable(fullName);
-        this.modified = Optional.ofNullable(modified);
-        this.comics = Optional.ofNullable(comics);
-        this.series = Optional.ofNullable(series);
-        this.notes = Optional.ofNullable(notes);
-        this.sortQuery = Optional.ofNullable(sortQuery);
+        this.id = id;
+        this.fullName = fullName;
+        this.modified = modified;
+        this.comics = comics;
+        this.series = series;
+        this.notes = notes;
+        this.sortQuery = sortQuery;
     }
 
-    public Optional<String> getId() {
+    public String getId() {
         return id;
     }
 
-    public Optional<String> getFullName() {
+    public String getFullName() {
         return fullName;
     }
 
-    public Optional<Long> getModified() {
+    public String getModified() {
         return modified;
     }
 
-    public Optional<Integer> getComics() {
+    public String getComics() {
         return comics;
     }
 
-    public Optional<Integer> getSeries() {
+    public String getSeries() {
         return series;
     }
 
-    public Optional<String> getNotes() {
+    public String getNotes() {
         return notes;
     }
 
-    public Optional<SortQuery> getSortQuery() {
+    public SortQuery getSortQuery() {
         return sortQuery;
     }
 }

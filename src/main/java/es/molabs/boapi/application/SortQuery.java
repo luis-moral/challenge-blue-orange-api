@@ -5,26 +5,26 @@ import java.util.List;
 public class SortQuery {
 
     public enum SortType {
-        ASCENDENT,
-        DESCENDENT
+        Ascending,
+        Descending
     }
 
-    private final List<Field> fields;
+    private final List<SortQueryField> fields;
 
-    public SortQuery(List<Field> fields) {
+    public SortQuery(List<SortQueryField> fields) {
         this.fields = fields;
     }
 
-    public List<Field> getFields() {
+    public List<SortQueryField> getFields() {
         return fields;
     }
 
-    public static class Field {
+    public static class SortQueryField {
 
         private final String field;
         private final SortType type;
 
-        public Field(String field, SortType type) {
+        public SortQueryField(String field, SortType type) {
             this.field = field;
             this.type = type;
         }
