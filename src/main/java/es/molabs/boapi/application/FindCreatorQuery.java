@@ -2,6 +2,8 @@ package es.molabs.boapi.application;
 
 public class FindCreatorQuery {
 
+    public final static FindCreatorQuery EMPTY = new FindCreatorQuery(null, null, null, null, null, null, null);
+
     private final String id;
     private final String fullName;
     private final String modified;
