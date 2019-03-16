@@ -4,10 +4,10 @@ import es.molabs.boapi.domain.Creator;
 import es.molabs.boapi.domain.CreatorNote;
 import es.molabs.boapi.infrastructure.repository.CreatorNoteRepository;
 import es.molabs.boapi.infrastructure.repository.CreatorRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +23,7 @@ public class CreatorService {
         this.creatorNoteRepository = creatorNoteRepository;
     }
 
-    public List<Creator> findCreators(FindCreatorQuery query) {
+    public Flux<Creator> findCreators(FindCreatorQuery query) {
         return
             Mono
                 .fromCallable(() -> creatorRepository.find(query))
@@ -34,9 +34,9 @@ public class CreatorService {
                             creators
                                 .stream()
                                 .map(creator -> creator.getId()).collect(Collectors.toList()))
-                    )
+                )
                 .map(tuple -> tuple.mapT2(values -> toMapByCreatorId(creatorNoteRepository.find(values))))
-                .map(tuple ->
+                .flatMapIterable(tuple ->
                         tuple
                             .getT1()
                             .stream()
@@ -45,8 +45,8 @@ public class CreatorService {
                                 return creator;
                             })
                             .collect(Collectors.toList())
-                    )
-                .block();
+                );
+
     }
 
     private Map<Integer, CreatorNote> toMapByCreatorId(List<CreatorNote> creatorNotes) {

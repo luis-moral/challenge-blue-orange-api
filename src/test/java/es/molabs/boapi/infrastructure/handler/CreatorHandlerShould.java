@@ -16,8 +16,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriBuilder;
+import reactor.core.publisher.Flux;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +51,7 @@ public class CreatorHandlerShould {
 
         Mockito
             .when(creatorService.findCreators(Mockito.any()))
-            .thenReturn(Arrays.asList(new Creator(1, "Some Name", System.currentTimeMillis(), 5, 6)));
+            .thenReturn(Flux.just(new Creator(1, "Some Name", System.currentTimeMillis(), 5, 6)));
 
         Mockito
             .when(creatorMapper.toCreatorDTO(Mockito.any()))

@@ -22,9 +22,8 @@ public class CreatorHandler {
             ServerResponse
                 .ok()
                 .body(
-                    Mono
-                        .fromCallable(() -> queryMapper.from(request.queryParams()))
-                        .flatMapIterable(query -> creatorService.findCreators(query))
+                    creatorService
+                        .findCreators(queryMapper.from(request.queryParams()))
                         .map(creator -> creatorMapper.toCreatorDTO(creator)),
                     CreatorDTO.class
                 );
