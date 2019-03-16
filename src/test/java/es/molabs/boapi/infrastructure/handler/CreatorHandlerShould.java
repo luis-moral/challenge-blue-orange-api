@@ -34,10 +34,8 @@ public class CreatorHandlerShould {
 
     @MockBean
     private CreatorService creatorService;
-
     @MockBean
     private CreatorMapper creatorMapper;
-
     @MockBean
     private FindCreatorQueryMapper queryMapper;
 

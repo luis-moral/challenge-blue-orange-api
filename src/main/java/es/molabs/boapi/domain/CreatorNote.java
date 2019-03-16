@@ -12,6 +12,14 @@ public class CreatorNote {
         this.text = text;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
     public String getText() {
         return text;
     }
