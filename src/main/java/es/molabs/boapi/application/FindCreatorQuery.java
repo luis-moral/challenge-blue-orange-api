@@ -1,6 +1,5 @@
 package es.molabs.boapi.application;
 
-import java.util.List;
 import java.util.Optional;
 
 public class FindCreatorQuery {
@@ -11,8 +10,7 @@ public class FindCreatorQuery {
     private final Optional<Integer> comics;
     private final Optional<Integer> series;
     private final Optional<String> notes;
-    private final List<String> sorting;
-    private final SortingType sortingType;
+    private final Optional<SortQuery> sortQuery;
 
     public FindCreatorQuery(
         String id,
@@ -21,8 +19,7 @@ public class FindCreatorQuery {
         Integer comics,
         Integer series,
         String notes,
-        List<String> sorting,
-        SortingType sortingType
+        SortQuery sortQuery
     ) {
         this.id = Optional.ofNullable(id);
         this.fullName = Optional.ofNullable(fullName);
@@ -30,8 +27,7 @@ public class FindCreatorQuery {
         this.comics = Optional.ofNullable(comics);
         this.series = Optional.ofNullable(series);
         this.notes = Optional.ofNullable(notes);
-        this.sorting = sorting;
-        this.sortingType = sortingType;
+        this.sortQuery = Optional.ofNullable(sortQuery);
     }
 
     public Optional<String> getId() {
@@ -58,11 +54,7 @@ public class FindCreatorQuery {
         return notes;
     }
 
-    public List<String> getSorting() {
-        return sorting;
-    }
-
-    public SortingType getSortingType() {
-        return sortingType;
+    public Optional<SortQuery> getSortQuery() {
+        return sortQuery;
     }
 }
