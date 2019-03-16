@@ -50,14 +50,15 @@ public class CreatorService {
     }
 
     private Map<Integer, CreatorNote> toMapByCreatorId(List<CreatorNote> creatorNotes) {
-        Map<Integer, CreatorNote> creatorNoteMap = new ConcurrentHashMap<>();
+        Map<Integer, CreatorNote> creatorNoteMap = null;
 
-        if (creatorNotes != null && !creatorNotes.isEmpty()) {
-            creatorNotes
-                .stream()
-                .forEach(note -> creatorNoteMap.put(note.getCreatorId(), note));
+        if (creatorNotes != null) {
+            creatorNoteMap =
+                creatorNotes
+                    .stream()
+                    .collect(Collectors.toConcurrentMap(note -> note.getCreatorId(), note -> note));
         }
 
-        return creatorNoteMap;
+        return creatorNoteMap != null ? creatorNoteMap : new ConcurrentHashMap<>();
     }
 }
