@@ -1,6 +1,7 @@
 package es.molabs.boapi.infrastructure.handler;
 
 import es.molabs.boapi.domain.Creator;
+import es.molabs.boapi.domain.CreatorNote;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +22,12 @@ public class CreatorMapperShould {
     public void map_creators_to_creator_dtos() {
         Creator creator =
             new Creator(
-                "some_id",
+                1,
                 "some_name",
                 System.currentTimeMillis() + 12500,
                 5,
                 5,
-                "Super"
+                new CreatorNote(2, 1, "Super")
             );
 
         CreatorDTO dto = mapper.toCreatorDTO(creator);
@@ -52,7 +53,7 @@ public class CreatorMapperShould {
             .isEqualTo(creator.getSeries());
 
         Assertions
-            .assertThat(dto.getNotes())
-            .isEqualTo(creator.getNotes());
+            .assertThat(dto.getNote())
+            .isEqualTo(creator.getNote().getText());
     }
 }

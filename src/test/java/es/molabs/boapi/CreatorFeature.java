@@ -29,9 +29,9 @@ public class CreatorFeature {
 	private static final Map<String, String> NO_FILTERS = null;
 	private static final List<String> NO_SORTING = null;
 
-	private static final Creator MAGGIE = new Creator("1", "Maggie One", System.currentTimeMillis(), 2, 4, "");
-	private static final Creator CHARLIE = new Creator("2", "Charlie Two", System.currentTimeMillis(), 4, 4, "");
-	private static final Creator JOHN = new Creator("3", "John Three", System.currentTimeMillis(), 1, 8, "");
+	private static final Creator MAGGIE = new Creator(1, "Maggie One", System.currentTimeMillis(), 2, 4);
+	private static final Creator CHARLIE = new Creator(2, "Charlie Two", System.currentTimeMillis(), 4, 4);
+	private static final Creator JOHN = new Creator(3, "John Three", System.currentTimeMillis(), 1, 8);
 
 	@Value("${endpoint.creator.path}")
 	private String creatorsPath;

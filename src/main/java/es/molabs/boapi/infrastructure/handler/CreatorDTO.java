@@ -2,23 +2,23 @@ package es.molabs.boapi.infrastructure.handler;
 
 public class CreatorDTO {
 
-    private final String id;
+    private final int id;
     private final String fullName;
     private final long modified;
     private final int comics;
     private final int series;
-    private final String notes;
+    private final String note;
 
-    public CreatorDTO(String id, String fullName, long modified, int comics, int series, String notes) {
+    public CreatorDTO(int id, String fullName, long modified, int comics, int series, String note) {
         this.id = id;
         this.fullName = fullName;
         this.modified = modified;
         this.comics = comics;
         this.series = series;
-        this.notes = notes;
+        this.note = note;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -38,7 +38,7 @@ public class CreatorDTO {
         return series;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getNote() {
+        return note;
     }
 }

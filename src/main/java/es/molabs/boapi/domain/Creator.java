@@ -2,27 +2,31 @@ package es.molabs.boapi.domain;
 
 public class Creator {
 
-    private String id;
+    private int id;
     private String fullName;
     private long modified;
     private int comics;
     private int series;
-    private String notes;
+    private CreatorNote note;
 
-    public Creator(String id, String fullName, long modified, int comics, int series, String notes) {
+    public Creator(int id, String fullName, long modified, int comics, int series) {
+        this(id, fullName, modified, comics, series, null);
+    }
+
+    public Creator(int id, String fullName, long modified, int comics, int series, CreatorNote note) {
         this.id = id;
         this.fullName = fullName;
         this.modified = modified;
         this.comics = comics;
         this.series = series;
-        this.notes = notes;
+        this.note = note;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -58,11 +62,11 @@ public class Creator {
         this.series = series;
     }
 
-    public String getNotes() {
-        return notes;
+    public CreatorNote getNote() {
+        return note;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setNote(CreatorNote note) {
+        this.note = note;
     }
 }

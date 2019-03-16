@@ -49,11 +49,11 @@ public class CreatorHandlerShould {
 
         Mockito
             .when(creatorService.findCreators(Mockito.any()))
-            .thenReturn(Arrays.asList(new Creator("1", "Some Name", System.currentTimeMillis(), 5, 6, "")));
+            .thenReturn(Arrays.asList(new Creator(1, "Some Name", System.currentTimeMillis(), 5, 6)));
 
         Mockito
             .when(creatorMapper.toCreatorDTO(Mockito.any()))
-            .thenReturn(new CreatorDTO("1", "Some Name", System.currentTimeMillis(), 5, 6, ""));
+            .thenReturn(new CreatorDTO(1, "Some Name", System.currentTimeMillis(), 5, 6, ""));
     }
 
     @Test public void
