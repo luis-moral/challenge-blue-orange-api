@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CreatorService {
 
-    public List<Creator> findCreators(FindCreatorsQuery query) {
+    public List<Creator> findCreators(FindCreatorQuery query) {
         throw new UnsupportedOperationException();
     }
 }

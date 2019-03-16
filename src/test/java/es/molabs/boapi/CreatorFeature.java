@@ -78,12 +78,12 @@ public class CreatorFeature {
 			.exchange()
 				.expectStatus()
 					.isOk()
-			.expectBody(new ParameterizedTypeReference<List<Creator>>() {})
-				.consumeWith(response ->
-					Assertions
-						.assertThat(response.getResponseBody())
-						.containsSequence(expectedCreators)
-				);
+				.expectBody(new ParameterizedTypeReference<List<Creator>>() {})
+					.consumeWith(response ->
+						Assertions
+							.assertThat(response.getResponseBody())
+							.containsSequence(expectedCreators)
+					);
 	}
 
 	private MultiValueMap toQueryParams(UriBuilder uriBuilder, Map<String, String> filters, List<String> sorting) {

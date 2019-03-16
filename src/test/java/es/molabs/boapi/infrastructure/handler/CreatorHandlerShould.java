@@ -1,23 +1,23 @@
 package es.molabs.boapi.infrastructure.handler;
 
 import es.molabs.boapi.application.CreatorService;
-import es.molabs.boapi.application.FindCreatorsQuery;
+import es.molabs.boapi.application.FindCreatorQuery;
+import es.molabs.boapi.domain.Creator;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,15 +31,36 @@ public class CreatorHandlerShould {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockBean
     private CreatorService creatorService;
+
+    @MockBean
+    private CreatorMapper creatorMapper;
+
+    @MockBean
+    private FindCreatorQueryMapper queryMapper;
+
+    @Before
+    public void setUp() {
+        Mockito
+            .when(queryMapper.from(Mockito.any()))
+            .thenReturn(new FindCreatorQuery("1", "Some Name", System.currentTimeMillis(), 5, 6, "", null, null));
+
+        Mockito
+            .when(creatorService.findCreators(Mockito.any()))
+            .thenReturn(Arrays.asList(new Creator("1", "Some Name", System.currentTimeMillis(), 5, 6, "")));
+
+        Mockito
+            .when(creatorMapper.toCreatorDTO(Mockito.any()))
+            .thenReturn(new CreatorDTO("1", "Some Name", System.currentTimeMillis(), 5, 6, ""));
+    }
 
     @Test public void
     allow_clients_to_get_a_list_of_creators() {
         getCreators(NO_FILTERS, NO_SORTING);
 
-        Mockito
-            .verify(creatorService, Mockito.times(1))
-            .findCreators(query(null, null));
+        verifyCalled();
     }
 
     @Test public void
@@ -49,9 +70,7 @@ public class CreatorHandlerShould {
 
         getCreators(filters, NO_SORTING);
 
-        Mockito
-            .verify(creatorService, Mockito.times(1))
-            .findCreators(query(filters, null));
+        verifyCalled();
     }
 
     @Test public void
@@ -61,9 +80,7 @@ public class CreatorHandlerShould {
 
         getCreators(NO_FILTERS, sorting);
 
-        Mockito
-            .verify(creatorService, Mockito.times(1))
-            .findCreators(query(null, sorting));
+        verifyCalled();
     }
 
     @Test public void
@@ -76,13 +93,21 @@ public class CreatorHandlerShould {
 
         getCreators(filters, sorting);
 
-        Mockito
-            .verify(creatorService, Mockito.times(1))
-            .findCreators(query(filters, sorting));
+        verifyCalled();
     }
 
-    private FindCreatorsQuery query(Map<String, String> filters, List<String> sorting) {
-        return new FindCreatorsQuery();
+    private void verifyCalled() {
+        Mockito
+            .verify(creatorMapper, Mockito.times(1))
+            .toCreatorDTO(Mockito.any());
+
+        Mockito
+            .verify(queryMapper, Mockito.times(1))
+            .from(Mockito.any());
+
+        Mockito
+            .verify(creatorService, Mockito.times(1))
+            .findCreators(Mockito.any());
     }
 
     private void getCreators(Map<String, String> filters, List<String> sorting) {
@@ -91,7 +116,7 @@ public class CreatorHandlerShould {
                 .uri(builder -> builder.path(creatorsPath).queryParams(toQueryParams(builder, filters, sorting)).build())
             .exchange()
                 .expectStatus()
-                .isOk();
+                    .isOk();
     }
 
     private MultiValueMap toQueryParams(UriBuilder uriBuilder, Map<String, String> filters, List<String> sorting) {
