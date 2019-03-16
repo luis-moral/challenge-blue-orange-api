@@ -34,7 +34,7 @@ public class FindCreatorQueryMapper {
         SortQuery query = null;
         List<String> values = queryParams.get(FIELD_SORT_BY);
 
-        if (!values.isEmpty()) {
+        if (values != null && !values.isEmpty()) {
             query = new SortQuery(
                 values
                     .stream()
