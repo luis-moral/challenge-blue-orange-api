@@ -2,6 +2,7 @@ package es.molabs.boapi.application;
 
 import es.molabs.boapi.domain.creator.Creator;
 import es.molabs.boapi.domain.creator.CreatorRepository;
+import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;

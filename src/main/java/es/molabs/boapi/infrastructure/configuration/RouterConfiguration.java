@@ -1,6 +1,6 @@
 package es.molabs.boapi.infrastructure.configuration;
 
-import es.molabs.boapi.infrastructure.handler.CreatorHandler;
+import es.molabs.boapi.infrastructure.handler.creator.CreatorHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

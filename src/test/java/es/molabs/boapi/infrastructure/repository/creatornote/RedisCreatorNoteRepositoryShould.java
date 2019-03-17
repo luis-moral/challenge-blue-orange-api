@@ -1,4 +1,4 @@
-package es.molabs.boapi.infrastructure.repository;
+package es.molabs.boapi.infrastructure.repository.creatornote;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

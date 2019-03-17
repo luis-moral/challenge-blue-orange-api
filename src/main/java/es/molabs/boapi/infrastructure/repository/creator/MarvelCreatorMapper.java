@@ -1,4 +1,4 @@
-package es.molabs.boapi.infrastructure.repository;
+package es.molabs.boapi.infrastructure.repository.creator;
 
 import es.molabs.boapi.domain.creator.Creator;
 

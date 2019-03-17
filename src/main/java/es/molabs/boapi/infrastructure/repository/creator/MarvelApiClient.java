@@ -1,6 +1,6 @@
-package es.molabs.boapi.infrastructure.repository;
+package es.molabs.boapi.infrastructure.repository.creator;
 
-import es.molabs.boapi.application.FindCreatorQuery;
+import es.molabs.boapi.domain.creator.FindCreatorQuery;
 
 import java.util.List;
 

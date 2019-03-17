@@ -1,8 +1,8 @@
 package es.molabs.boapi.infrastructure.configuration;
 
-import es.molabs.boapi.infrastructure.handler.CreatorMapper;
-import es.molabs.boapi.infrastructure.handler.FindCreatorQueryMapper;
-import es.molabs.boapi.infrastructure.repository.MarvelCreatorMapper;
+import es.molabs.boapi.infrastructure.handler.creator.CreatorMapper;
+import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
+import es.molabs.boapi.infrastructure.repository.creator.MarvelCreatorMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,7 +1,7 @@
-package es.molabs.boapi.infrastructure.handler;
+package es.molabs.boapi.infrastructure.handler.creator;
 
-import es.molabs.boapi.application.FindCreatorQuery;
-import es.molabs.boapi.application.SortQuery;
+import es.molabs.boapi.domain.creator.FindCreatorQuery;
+import es.molabs.boapi.domain.creator.SortQuery;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;

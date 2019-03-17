@@ -1,4 +1,4 @@
-package es.molabs.boapi.infrastructure.repository;
+package es.molabs.boapi.infrastructure.repository.creatornote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;

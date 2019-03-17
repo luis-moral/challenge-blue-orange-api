@@ -1,8 +1,8 @@
-package es.molabs.boapi.infrastructure.handler;
+package es.molabs.boapi.infrastructure.handler.creator;
 
 import es.molabs.boapi.application.CreatorService;
-import es.molabs.boapi.application.FindCreatorQuery;
 import es.molabs.boapi.domain.creator.Creator;
+import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

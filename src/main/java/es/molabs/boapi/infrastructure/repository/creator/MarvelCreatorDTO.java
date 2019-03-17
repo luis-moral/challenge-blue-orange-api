@@ -1,21 +1,19 @@
-package es.molabs.boapi.infrastructure.handler;
+package es.molabs.boapi.infrastructure.repository.creator;
 
-public class CreatorDTO {
+public class MarvelCreatorDTO {
 
     private final int id;
     private final String fullName;
     private final long modified;
     private final int comics;
     private final int series;
-    private final String note;
 
-    public CreatorDTO(int id, String fullName, long modified, int comics, int series, String note) {
+    public MarvelCreatorDTO(int id, String fullName, long modified, int comics, int series) {
         this.id = id;
         this.fullName = fullName;
         this.modified = modified;
         this.comics = comics;
         this.series = series;
-        this.note = note;
     }
 
     public int getId() {
@@ -36,9 +34,5 @@ public class CreatorDTO {
 
     public int getSeries() {
         return series;
-    }
-
-    public String getNote() {
-        return note;
     }
 }

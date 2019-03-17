@@ -1,4 +1,4 @@
-package es.molabs.boapi.infrastructure.handler;
+package es.molabs.boapi.infrastructure.handler.creator;
 
 import es.molabs.boapi.application.CreatorService;
 import org.springframework.web.reactive.function.server.ServerRequest;

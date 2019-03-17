@@ -1,4 +1,4 @@
-package es.molabs.boapi.infrastructure.handler;
+package es.molabs.boapi.infrastructure.handler.creator;
 
 import es.molabs.boapi.domain.creator.Creator;
 import es.molabs.boapi.domain.creatornote.CreatorNote;

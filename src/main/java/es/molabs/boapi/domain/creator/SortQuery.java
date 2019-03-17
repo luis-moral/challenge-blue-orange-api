@@ -1,4 +1,4 @@
-package es.molabs.boapi.application;
+package es.molabs.boapi.domain.creator;
 
 import java.util.List;
 
