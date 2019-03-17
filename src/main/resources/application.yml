@@ -16,3 +16,8 @@ endpoint:
   base-path: /api
   creator:
     path: ${endpoint.base-path}/creator
+
+marvel:
+  api:
+    host: https://gateway.marvel.com
+    port: 443
