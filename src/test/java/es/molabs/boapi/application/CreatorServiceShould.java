@@ -12,10 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreatorServiceShould {
@@ -39,19 +37,21 @@ public class CreatorServiceShould {
         Creator firstCreator = creator(1);
         Creator secondCreator = creator(2);
         Flux<Creator> repositoryCreators = Flux.just(firstCreator, secondCreator);
-        List<Integer> repositoryCreatorsIds = repositoryCreators.map(creator -> creator.getId()).toStream().collect(Collectors.toList());
 
         CreatorNote firstNote = new CreatorNote(10, firstCreator.getId(), "First");
         CreatorNote secondNote = new CreatorNote(20, secondCreator.getId(), "Second");
-        Flux<CreatorNote> repositoryNotes = Flux.just(firstNote, secondNote);
 
         Mockito
             .when(creatorRepository.find(query))
             .thenReturn(repositoryCreators);
 
         Mockito
-            .when(creatorNoteRepository.findByCreatorId(repositoryCreatorsIds))
-            .thenReturn(repositoryNotes);
+            .when(creatorNoteRepository.findByCreatorId(firstCreator.getId()))
+            .thenReturn(Mono.just(firstNote));
+
+        Mockito
+            .when(creatorNoteRepository.findByCreatorId(secondCreator.getId()))
+            .thenReturn(Mono.just(secondNote));
 
         StepVerifier
             .create(creatorService.findCreators(query))
@@ -64,7 +64,11 @@ public class CreatorServiceShould {
 
         Mockito
             .verify(creatorNoteRepository, Mockito.times(1))
-            .findByCreatorId(repositoryCreatorsIds);
+            .findByCreatorId(firstCreator.getId());
+
+        Mockito
+            .verify(creatorNoteRepository, Mockito.times(1))
+            .findByCreatorId(secondCreator.getId());
     }
 
     private Creator creator(int id) {

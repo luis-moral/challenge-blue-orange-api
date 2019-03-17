@@ -3,10 +3,8 @@ package es.molabs.boapi.infrastructure.repository.creatornote;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import redis.clients.jedis.Jedis;
-
-import java.util.List;
 
 public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
@@ -22,11 +20,11 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     }
 
     @Override
-    public Flux<CreatorNote> findByCreatorId(List<Integer> creatorIds) {
+    public Mono<CreatorNote> findByCreatorId(int creatorId) {
         return
-            Flux
-                .fromIterable(creatorIds)
-                .map(creatorId -> redisClient.get(KEY_CREATOR_NOTE_BY_CREATOR + creatorId))
+            Mono
+                .just(creatorId)
+                .map(id -> redisClient.get(KEY_CREATOR_NOTE_BY_CREATOR + id))
                 .map(key -> objectMapper.convertValue(redisClient.hgetAll(key), CreatorNote.class));
     }
 }

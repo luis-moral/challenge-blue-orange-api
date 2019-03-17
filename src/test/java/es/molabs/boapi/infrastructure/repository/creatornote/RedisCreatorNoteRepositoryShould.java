@@ -12,7 +12,6 @@ import reactor.test.StepVerifier;
 import redis.clients.jedis.Jedis;
 import redis.embedded.RedisServer;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
@@ -58,8 +57,8 @@ public class RedisCreatorNoteRepositoryShould {
         addNote(thirdNote);
 
         StepVerifier
-            .create(creatorNoteRepository.findByCreatorId(Arrays.asList(firstNote.getCreatorId(), thirdNote.getCreatorId())))
-            .expectNext(firstNote, thirdNote)
+            .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
+            .expectNext(firstNote)
             .verifyComplete();
     }
 
