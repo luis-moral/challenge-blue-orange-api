@@ -8,7 +8,6 @@ import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuples;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -49,13 +48,13 @@ public class CreatorService {
 
     }
 
-    private Map<Integer, CreatorNote> toMapByCreatorId(List<CreatorNote> creatorNotes) {
+    private Map<Integer, CreatorNote> toMapByCreatorId(Flux<CreatorNote> creatorNotes) {
         Map<Integer, CreatorNote> creatorNoteMap = null;
 
         if (creatorNotes != null) {
             creatorNoteMap =
                 creatorNotes
-                    .stream()
+                    .toStream()
                     .collect(Collectors.toConcurrentMap(note -> note.getCreatorId(), note -> note));
         }
 

@@ -14,7 +14,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class CreatorServiceShould {
 
         CreatorNote firstNote = new CreatorNote(10, firstCreator.getId(), "First");
         CreatorNote secondNote = new CreatorNote(20, secondCreator.getId(), "Second");
-        List<CreatorNote> repositoryNotes = Arrays.asList(firstNote, secondNote);
+        Flux<CreatorNote> repositoryNotes = Flux.just(firstNote, secondNote);
 
         Mockito
             .when(creatorRepository.find(query))

@@ -3,17 +3,16 @@ package es.molabs.boapi.infrastructure.repository.creatornote;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import reactor.test.StepVerifier;
 import redis.clients.jedis.Jedis;
 import redis.embedded.RedisServer;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -58,12 +57,10 @@ public class RedisCreatorNoteRepositoryShould {
         addNote(secondNote);
         addNote(thirdNote);
 
-        List<CreatorNote> creatorNotes =
-            creatorNoteRepository.findByCreatorId(Arrays.asList(firstNote.getCreatorId(), thirdNote.getCreatorId()));
-
-        Assertions
-            .assertThat(creatorNotes)
-            .containsExactly(firstNote, thirdNote);
+        StepVerifier
+            .create(creatorNoteRepository.findByCreatorId(Arrays.asList(firstNote.getCreatorId(), thirdNote.getCreatorId())))
+            .expectNext(firstNote, thirdNote)
+            .verifyComplete();
     }
 
     private void addNote(CreatorNote note) {
