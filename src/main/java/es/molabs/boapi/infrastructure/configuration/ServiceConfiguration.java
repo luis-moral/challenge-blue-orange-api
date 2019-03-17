@@ -1,8 +1,8 @@
 package es.molabs.boapi.infrastructure.configuration;
 
 import es.molabs.boapi.application.CreatorService;
-import es.molabs.boapi.infrastructure.repository.CreatorNoteRepository;
-import es.molabs.boapi.infrastructure.repository.CreatorRepository;
+import es.molabs.boapi.domain.creator.CreatorRepository;
+import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

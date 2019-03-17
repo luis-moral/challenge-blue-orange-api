@@ -1,6 +1,6 @@
 package es.molabs.boapi.infrastructure.handler;
 
-import es.molabs.boapi.domain.Creator;
+import es.molabs.boapi.domain.creator.Creator;
 
 public class CreatorMapper {
 

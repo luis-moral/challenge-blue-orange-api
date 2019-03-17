@@ -1,9 +1,9 @@
 package es.molabs.boapi.application;
 
-import es.molabs.boapi.domain.Creator;
-import es.molabs.boapi.domain.CreatorNote;
-import es.molabs.boapi.infrastructure.repository.CreatorNoteRepository;
-import es.molabs.boapi.infrastructure.repository.CreatorRepository;
+import es.molabs.boapi.domain.creator.Creator;
+import es.molabs.boapi.domain.creator.CreatorRepository;
+import es.molabs.boapi.domain.creatornote.CreatorNote;
+import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;

@@ -1,7 +1,7 @@
 package es.molabs.boapi.infrastructure.handler;
 
-import es.molabs.boapi.domain.Creator;
-import es.molabs.boapi.domain.CreatorNote;
+import es.molabs.boapi.domain.creator.Creator;
+import es.molabs.boapi.domain.creatornote.CreatorNote;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

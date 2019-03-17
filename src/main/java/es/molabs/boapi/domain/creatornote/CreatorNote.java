@@ -1,4 +1,4 @@
-package es.molabs.boapi.domain;
+package es.molabs.boapi.domain.creatornote;
 
 public class CreatorNote {
 

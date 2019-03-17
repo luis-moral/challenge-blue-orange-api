@@ -1,6 +1,6 @@
 package es.molabs.boapi;
 
-import es.molabs.boapi.domain.Creator;
+import es.molabs.boapi.domain.creator.Creator;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,9 +1,9 @@
 package es.molabs.boapi.application;
 
-import es.molabs.boapi.domain.Creator;
-import es.molabs.boapi.domain.CreatorNote;
-import es.molabs.boapi.infrastructure.repository.CreatorNoteRepository;
-import es.molabs.boapi.infrastructure.repository.CreatorRepository;
+import es.molabs.boapi.domain.creator.Creator;
+import es.molabs.boapi.domain.creatornote.CreatorNote;
+import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
+import es.molabs.boapi.domain.creator.CreatorRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
