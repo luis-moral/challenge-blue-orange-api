@@ -6,10 +6,11 @@ import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
+import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class CreatorService {
@@ -26,38 +27,42 @@ public class CreatorService {
         return
             creatorRepository.find(query)
                 .collectList()
-                .map(creators ->
-                    Tuples
-                        .of(
-                            creators,
-                            creators
-                                .stream()
-                                .map(creator -> creator.getId()).collect(Collectors.toList()))
-                )
-                .map(tuple -> tuple.mapT2(values -> toMapByCreatorId(creatorNoteRepository.findByCreatorId(values))))
-                .flatMapIterable(tuple ->
-                    tuple
-                        .getT1()
-                        .stream()
-                        .map(creator -> {
-                            creator.setNote(tuple.getT2().get(creator.getId()));
-                            return creator;
-                        })
-                        .collect(Collectors.toList())
-                );
-
+                .map(this::toCreatorIdTuple)
+                .map(this::toMapByCreatorId)
+                .flatMapIterable(this::addNotesToCreators);
     }
 
-    private Map<Integer, CreatorNote> toMapByCreatorId(Flux<CreatorNote> creatorNotes) {
-        Map<Integer, CreatorNote> creatorNoteMap = null;
+    private Tuple2<List<Creator>, List<Integer>> toCreatorIdTuple(List<Creator> creators) {
+        return
+            Tuples
+                .of(
+                    creators,
+                    creators
+                        .stream()
+                        .map(creator -> creator.getId()).collect(Collectors.toList()));
+    }
 
-        if (creatorNotes != null) {
-            creatorNoteMap =
-                creatorNotes
-                    .toStream()
-                    .collect(Collectors.toConcurrentMap(note -> note.getCreatorId(), note -> note));
-        }
+    private Tuple2<List<Creator>, Map<Integer, CreatorNote>> toMapByCreatorId(Tuple2<List<Creator>, List<Integer>> creatorIdTuple) {
+        return
+            creatorIdTuple
+                .mapT2(
+                    creatorIds ->
+                        creatorNoteRepository
+                            .findByCreatorId(creatorIds)
+                            .toStream()
+                            .collect(Collectors.toConcurrentMap(note -> note.getCreatorId(), note -> note))
+                );
+    }
 
-        return creatorNoteMap != null ? creatorNoteMap : new ConcurrentHashMap<>();
+    private List<Creator> addNotesToCreators(Tuple2<List<Creator>, Map<Integer, CreatorNote>> creatorNoteTuple) {
+        return
+            creatorNoteTuple
+                .getT1()
+                .stream()
+                .map(creator -> {
+                    creator.setNote(creatorNoteTuple.getT2().get(creator.getId()));
+                    return creator;
+                })
+                .collect(Collectors.toList());
     }
 }
