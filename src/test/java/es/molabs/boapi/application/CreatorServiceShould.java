@@ -49,7 +49,7 @@ public class CreatorServiceShould {
             .thenReturn(repositoryCreators);
 
         Mockito
-            .when(creatorNoteRepository.find(repositoryCreatorsIds))
+            .when(creatorNoteRepository.findByCreatorId(repositoryCreatorsIds))
             .thenReturn(repositoryNotes);
 
         StepVerifier
@@ -63,7 +63,7 @@ public class CreatorServiceShould {
 
         Mockito
             .verify(creatorNoteRepository, Mockito.times(1))
-            .find(repositoryCreatorsIds);
+            .findByCreatorId(repositoryCreatorsIds);
     }
 
     private Creator creator(int id) {

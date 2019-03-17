@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 
 public class FindCreatorQueryMapper {
 
-    private final static String FIELD_ID = "id";
-    private final static String FIELD_FULL_NAME = "fullName";
-    private final static String FIELD_MODIFIED = "modified";
-    private final static String FIELD_COMICS = "comics";
-    private final static String FIELD_SERIES = "series";
-    private final static String FIELD_NOTES = "notes";
-    private final static String FIELD_SORT_BY = "orderBy";
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_FULL_NAME = "fullName";
+    private static final String FIELD_MODIFIED = "modified";
+    private static final String FIELD_COMICS = "comics";
+    private static final String FIELD_SERIES = "series";
+    private static final String FIELD_NOTES = "notes";
+    private static final String FIELD_SORT_BY = "orderBy";
 
     public FindCreatorQuery from(MultiValueMap<String, String> queryParams) {
         return

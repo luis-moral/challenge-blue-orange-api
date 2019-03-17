@@ -35,7 +35,7 @@ public class CreatorService {
                                 .stream()
                                 .map(creator -> creator.getId()).collect(Collectors.toList()))
                 )
-                .map(tuple -> tuple.mapT2(values -> toMapByCreatorId(creatorNoteRepository.find(values))))
+                .map(tuple -> tuple.mapT2(values -> toMapByCreatorId(creatorNoteRepository.findByCreatorId(values))))
                 .flatMapIterable(tuple ->
                         tuple
                             .getT1()

@@ -16,8 +16,10 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'io.projectreactor.netty:reactor-netty'
+	implementation 'redis.clients:jedis:2.8.2'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.assertj:assertj-core:3.12.1'
+	testImplementation 'it.ozimov:embedded-redis:0.7.2'
 }
