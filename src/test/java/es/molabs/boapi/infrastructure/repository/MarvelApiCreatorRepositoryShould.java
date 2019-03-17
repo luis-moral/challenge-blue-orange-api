@@ -2,13 +2,13 @@ package es.molabs.boapi.infrastructure.repository;
 
 import es.molabs.boapi.application.FindCreatorQuery;
 import es.molabs.boapi.domain.creator.Creator;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.test.StepVerifier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +51,10 @@ public class MarvelApiCreatorRepositoryShould {
             .when(mapper.toCreator(secondCreatorDTO))
             .thenReturn(secondCreator);
 
-        List<Creator> creators = creatorRepository.find(query);
+        StepVerifier
+            .create(creatorRepository.find(query))
+            .expectNext(firstCreator, secondCreator)
+            .verifyComplete();
 
         Mockito
             .verify(apiClient, Mockito.times(1))
@@ -64,9 +67,5 @@ public class MarvelApiCreatorRepositoryShould {
         Mockito
             .verify(mapper, Mockito.times(1))
             .toCreator(secondCreatorDTO);
-
-        Assertions
-            .assertThat(creators)
-            .containsExactly(firstCreator, secondCreator);
     }
 }

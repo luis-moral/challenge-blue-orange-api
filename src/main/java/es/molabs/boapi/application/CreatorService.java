@@ -5,7 +5,6 @@ import es.molabs.boapi.domain.creator.CreatorRepository;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
 import java.util.List;
@@ -25,8 +24,8 @@ public class CreatorService {
 
     public Flux<Creator> findCreators(FindCreatorQuery query) {
         return
-            Mono
-                .fromCallable(() -> creatorRepository.find(query))
+            creatorRepository.find(query)
+                .collectList()
                 .map(creators ->
                     Tuples
                         .of(
@@ -37,14 +36,14 @@ public class CreatorService {
                 )
                 .map(tuple -> tuple.mapT2(values -> toMapByCreatorId(creatorNoteRepository.findByCreatorId(values))))
                 .flatMapIterable(tuple ->
-                        tuple
-                            .getT1()
-                            .stream()
-                            .map(creator -> {
-                                creator.setNote(tuple.getT2().get(creator.getId()));
-                                return creator;
-                            })
-                            .collect(Collectors.toList())
+                    tuple
+                        .getT1()
+                        .stream()
+                        .map(creator -> {
+                            creator.setNote(tuple.getT2().get(creator.getId()));
+                            return creator;
+                        })
+                        .collect(Collectors.toList())
                 );
 
     }

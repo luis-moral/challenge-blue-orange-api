@@ -1,10 +1,9 @@
 package es.molabs.boapi.domain.creator;
 
 import es.molabs.boapi.application.FindCreatorQuery;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface CreatorRepository {
 
-    List<Creator> find(FindCreatorQuery query);
+    Flux<Creator> find(FindCreatorQuery query);
 }
