@@ -8,10 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MarvelApiCreatorRepositoryShould {
@@ -34,7 +32,7 @@ public class MarvelApiCreatorRepositoryShould {
 
         MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(1, "Name First", 123, 5, 6);
         MarvelCreatorDTO secondCreatorDTO = new MarvelCreatorDTO(2, "Name Second", 126, 3, 2);
-        List<MarvelCreatorDTO> apiClientCreators = Arrays.asList(firstCreatorDTO, secondCreatorDTO);
+        Flux<MarvelCreatorDTO> apiClientCreators = Flux.just(firstCreatorDTO, secondCreatorDTO);
 
         Creator firstCreator = Mockito.mock(Creator.class);
         Creator secondCreator = Mockito.mock(Creator.class);

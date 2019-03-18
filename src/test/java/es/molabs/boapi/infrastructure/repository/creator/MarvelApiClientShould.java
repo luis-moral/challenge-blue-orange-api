@@ -3,8 +3,8 @@ package es.molabs.boapi.infrastructure.repository.creator;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
+import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +13,10 @@ import org.junit.runners.JUnit4;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
@@ -37,7 +37,13 @@ public class MarvelApiClientShould {
         marvelApiMock = new WireMockServer(MARVEL_API_PORT);
         marvelApiMock.start();
 
-        marvelApiClient = new MarvelApiClient("http://localhost:" + MARVEL_API_PORT, MARVEL_API_KEY, WebClient.create());
+        marvelApiClient =
+            new MarvelApiClient(
+                "http://localhost:" + MARVEL_API_PORT,
+                MARVEL_API_KEY,
+                WebClient.create(),
+                new FindCreatorQueryMapper()
+            );
     }
 
     @After
@@ -63,11 +69,10 @@ public class MarvelApiClientShould {
 
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        List<MarvelCreatorDTO> creatorDTOs = marvelApiClient.get(query);
-
-        Assertions
-            .assertThat(creatorDTOs)
-            .hasSize(2);
+        StepVerifier
+            .create(marvelApiClient.get(query))
+            .expectNextCount(2)
+            .verifyComplete();
     }
 
     private String readFile(String resource) throws IOException {

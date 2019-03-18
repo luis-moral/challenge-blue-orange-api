@@ -18,8 +18,8 @@ public class MarvelApiCreatorRepository implements CreatorRepository {
     @Override
     public Flux<Creator> find(FindCreatorQuery query) {
         return
-            Flux
-                .fromIterable(apiClient.get(query))
+            apiClient
+                .get(query)
                 .map(mapper::toCreator);
     }
 }
