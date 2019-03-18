@@ -1,5 +1,6 @@
 package es.molabs.boapi.infrastructure.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
 import es.molabs.boapi.infrastructure.repository.creator.MarvelApiClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +28,12 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public MarvelApiClient marvelApiClient(WebClient webClient, FindCreatorQueryMapper queryMapper) {
-        return new MarvelApiClient(marvelbaseUrl, marvelApiKey, webClient, queryMapper);
+    public MarvelApiClient marvelApiClient(
+        WebClient webClient,
+        FindCreatorQueryMapper queryMapper,
+        ObjectMapper objectMapper
+    ) {
+        return new MarvelApiClient(marvelbaseUrl, marvelApiKey, webClient, queryMapper, objectMapper);
     }
 
     @Bean

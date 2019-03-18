@@ -1,5 +1,6 @@
 package es.molabs.boapi.infrastructure.repository.creator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
@@ -42,7 +43,8 @@ public class MarvelApiClientShould {
                 "http://localhost:" + MARVEL_API_PORT,
                 MARVEL_API_KEY,
                 WebClient.create(),
-                new FindCreatorQueryMapper()
+                new FindCreatorQueryMapper(),
+                new ObjectMapper()
             );
     }
 
@@ -56,14 +58,14 @@ public class MarvelApiClientShould {
         marvelApiMock
             .stubFor(
                 WireMock
-                    .get(WireMock.urlEqualTo("/v1/public/creators"))
+                    .get(WireMock.urlPathEqualTo("/v1/public/creators"))
                     .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
                 .willReturn(
                     WireMock
                         .aResponse()
-                        .withStatus(200)
-                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                        .withBody(readFile("/creator/get_two_creators.json"))
+                            .withStatus(200)
+                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                            .withBody(readFile("/creator/get_two_creators.json"))
                 )
             );
 

@@ -30,8 +30,8 @@ public class MarvelApiCreatorRepositoryShould {
     retrieve_the_creators() {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(1, "Name First", 123, 5, 6);
-        MarvelCreatorDTO secondCreatorDTO = new MarvelCreatorDTO(2, "Name Second", 126, 3, 2);
+        MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(1, "Name First", "-0001-11-30T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(6), new MarvelCreatorDTO.ItemsDTO(6));
+        MarvelCreatorDTO secondCreatorDTO = new MarvelCreatorDTO(2, "Name Second", "-0001-11-30T10:30:00-0500", new MarvelCreatorDTO.ItemsDTO(3), new MarvelCreatorDTO.ItemsDTO(2));
         Flux<MarvelCreatorDTO> apiClientCreators = Flux.just(firstCreatorDTO, secondCreatorDTO);
 
         Creator firstCreator = Mockito.mock(Creator.class);
