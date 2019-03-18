@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
@@ -54,13 +56,17 @@ public class MarvelApiClientShould {
                         .aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                        .withBody(readFile("/creator/get_creators.json"))
+                        .withBody(readFile("/creator/get_two_creators.json"))
                 )
             );
 
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        marvelApiClient.get(query);
+        List<MarvelCreatorDTO> creatorDTOs = marvelApiClient.get(query);
+
+        Assertions
+            .assertThat(creatorDTOs)
+            .hasSize(2);
     }
 
     private String readFile(String resource) throws IOException {
