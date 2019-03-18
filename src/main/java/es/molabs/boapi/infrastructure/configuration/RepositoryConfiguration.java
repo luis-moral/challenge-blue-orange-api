@@ -7,23 +7,12 @@ import es.molabs.boapi.infrastructure.repository.creator.MarvelApiClient;
 import es.molabs.boapi.infrastructure.repository.creator.MarvelApiCreatorRepository;
 import es.molabs.boapi.infrastructure.repository.creator.MarvelCreatorMapper;
 import es.molabs.boapi.infrastructure.repository.creatornote.RedisCreatorNoteRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import redis.clients.jedis.Jedis;
 
 @Configuration
 public class RepositoryConfiguration {
-
-    @Value("${redis.host}")
-    private String redisHost;
-
-    @Value("${redis.port}")
-    private int redisPort;
-
-    @Bean
-    public MarvelApiClient apiClient() {
-        return new MarvelApiClient();
-    }
 
     @Bean
     public CreatorRepository creatorRepository(MarvelApiClient apiClient, MarvelCreatorMapper mapper) {
@@ -31,7 +20,7 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public CreatorNoteRepository creatorNoteRepository(ObjectMapper objectMapper) {
-        return new RedisCreatorNoteRepository(redisHost, redisPort, objectMapper);
+    public CreatorNoteRepository creatorNoteRepository(Jedis redisClient, ObjectMapper objectMapper) {
+        return new RedisCreatorNoteRepository(redisClient, objectMapper);
     }
 }

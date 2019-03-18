@@ -21,3 +21,4 @@ marvel:
   api:
     host: https://gateway.marvel.com
     port: 443
+    key: abcdefg12345

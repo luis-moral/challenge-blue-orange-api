@@ -13,10 +13,9 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     private final ObjectMapper objectMapper;
     private final Jedis redisClient;
 
-    public RedisCreatorNoteRepository(String host, int port, ObjectMapper objectMapper) {
+    public RedisCreatorNoteRepository(Jedis redisClient, ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-
-        redisClient = new Jedis(host, port);
+        this.redisClient = redisClient;
     }
 
     @Override

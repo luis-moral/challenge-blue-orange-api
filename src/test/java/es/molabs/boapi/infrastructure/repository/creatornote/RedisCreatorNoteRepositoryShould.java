@@ -38,7 +38,7 @@ public class RedisCreatorNoteRepositoryShould {
         redisClient = new Jedis("localhost", REDIS_PORT);
 
         objectMapper = new ObjectMapper();
-        creatorNoteRepository = new RedisCreatorNoteRepository("localhost", REDIS_PORT, objectMapper);
+        creatorNoteRepository = new RedisCreatorNoteRepository(redisClient, objectMapper);
     }
 
     @After
