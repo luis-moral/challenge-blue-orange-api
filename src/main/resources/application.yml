@@ -8,16 +8,16 @@ server:
   address: 0.0.0.0
   port: 8080
 
-redis:
-  host: "localhost"
-  port: 12305
-
 endpoint:
   base-path: /api
   creator:
     path: ${endpoint.base-path}/creator
   health:
     path: /status
+
+redis:
+  host: "localhost"
+  port: 12305
 
 marvel:
   api:

@@ -19,19 +19,35 @@ public class CreatorMapperShould {
     }
 
     @Test
-    public void map_creators_to_creator_dtos() {
+    public void map_creator_without_note_to_creator_dto() {
         Creator creator =
             new Creator(
                 1,
                 "some_name",
-                System.currentTimeMillis() + 12500,
+                "123",
+                5,
+                5
+            );
+
+        assertDto(mapper.toCreatorDTO(creator), creator);
+    }
+
+    @Test
+    public void map_creator_with_note_to_creator_dto() {
+        Creator creator =
+            new Creator(
+                1,
+                "some_name",
+                "123",
                 5,
                 5,
                 new CreatorNote(2, 1, "Super")
             );
 
-        CreatorDTO dto = mapper.toCreatorDTO(creator);
+        assertDto(mapper.toCreatorDTO(creator), creator);
+    }
 
+    private void assertDto(CreatorDTO dto, Creator creator) {
         Assertions
             .assertThat(dto.getId())
             .isEqualTo(creator.getId());
@@ -52,8 +68,14 @@ public class CreatorMapperShould {
             .assertThat(dto.getSeries())
             .isEqualTo(creator.getSeries());
 
-        Assertions
-            .assertThat(dto.getNote())
-            .isEqualTo(creator.getNote().getText());
+        if (creator.getNote() != null) {
+            Assertions
+                .assertThat(dto.getNote())
+                .isEqualTo(creator.getNote().getText());
+        } else {
+            Assertions
+                .assertThat(dto.getNote())
+                .isNull();
+        }
     }
 }

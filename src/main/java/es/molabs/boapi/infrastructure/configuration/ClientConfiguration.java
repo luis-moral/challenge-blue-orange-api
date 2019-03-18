@@ -13,7 +13,7 @@ import redis.clients.jedis.Jedis;
 public class ClientConfiguration {
 
     @Value("${marvel.api.base-url}")
-    private String marvelbaseUrl;
+    private String marvelBaseUrl;
     @Value("${marvel.api.key}")
     private String marvelApiKey;
 
@@ -33,7 +33,7 @@ public class ClientConfiguration {
         FindCreatorQueryMapper queryMapper,
         ObjectMapper objectMapper
     ) {
-        return new MarvelApiClient(marvelbaseUrl, marvelApiKey, webClient, queryMapper, objectMapper);
+        return new MarvelApiClient(marvelBaseUrl, marvelApiKey, webClient, queryMapper, objectMapper);
     }
 
     @Bean

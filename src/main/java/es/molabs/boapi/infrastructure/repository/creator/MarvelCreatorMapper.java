@@ -5,6 +5,13 @@ import es.molabs.boapi.domain.creator.Creator;
 public class MarvelCreatorMapper {
 
     public Creator toCreator(MarvelCreatorDTO creatorDTO) {
-        throw new UnsupportedOperationException();
+        return
+            new Creator(
+                creatorDTO.getId(),
+                creatorDTO.getFullName(),
+                creatorDTO.getModified(),
+                creatorDTO.getComics(),
+                creatorDTO.getSeries()
+            );
     }
 }

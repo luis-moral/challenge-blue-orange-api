@@ -1,0 +1,8 @@
+redis:
+  host: "localhost"
+  port: 21358
+
+marvel:
+  api:
+    base-url: http://localhost:24584
+    key: abcdefg12345

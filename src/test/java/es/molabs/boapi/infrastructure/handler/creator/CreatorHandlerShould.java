@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class CreatorHandlerShould {
 
     private static final Map<String, String> NO_FILTERS = null;
@@ -51,11 +53,11 @@ public class CreatorHandlerShould {
 
         Mockito
             .when(creatorService.findCreators(Mockito.any()))
-            .thenReturn(Flux.just(new Creator(1, "Some Name", System.currentTimeMillis(), 5, 6)));
+            .thenReturn(Flux.just(new Creator(1, "Some Name", "123", 5, 6)));
 
         Mockito
             .when(creatorMapper.toCreatorDTO(Mockito.any()))
-            .thenReturn(new CreatorDTO(1, "Some Name", System.currentTimeMillis(), 5, 6, ""));
+            .thenReturn(new CreatorDTO(1, "Some Name", "123", 5, 6, ""));
     }
 
     @Test public void

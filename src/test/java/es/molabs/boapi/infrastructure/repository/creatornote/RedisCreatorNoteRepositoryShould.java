@@ -43,7 +43,9 @@ public class RedisCreatorNoteRepositoryShould {
 
     @After
     public void tearDown() {
-        redisServer.stop();
+        if (redisServer.isActive()) {
+            redisServer.stop();
+        }
     }
 
     @Test public void

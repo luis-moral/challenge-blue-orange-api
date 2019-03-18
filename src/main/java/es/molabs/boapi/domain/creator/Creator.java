@@ -6,16 +6,16 @@ public class Creator {
 
     private int id;
     private String fullName;
-    private long modified;
+    private String modified;
     private int comics;
     private int series;
     private CreatorNote note;
 
-    public Creator(int id, String fullName, long modified, int comics, int series) {
+    public Creator(int id, String fullName, String modified, int comics, int series) {
         this(id, fullName, modified, comics, series, null);
     }
 
-    public Creator(int id, String fullName, long modified, int comics, int series, CreatorNote note) {
+    public Creator(int id, String fullName, String modified, int comics, int series, CreatorNote note) {
         this.id = id;
         this.fullName = fullName;
         this.modified = modified;
@@ -40,11 +40,11 @@ public class Creator {
         this.fullName = fullName;
     }
 
-    public long getModified() {
+    public String getModified() {
         return modified;
     }
 
-    public void setModified(long modified) {
+    public void setModified(String modified) {
         this.modified = modified;
     }
 

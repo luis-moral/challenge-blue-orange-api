@@ -72,6 +72,6 @@ public class CreatorServiceShould {
     }
 
     private Creator creator(int id) {
-        return new Creator(id, "", 123, 4, 5);
+        return new Creator(id, "", "123", 4, 5);
     }
 }

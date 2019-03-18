@@ -12,7 +12,7 @@ public class CreatorMapper {
                 creator.getModified(),
                 creator.getComics(),
                 creator.getSeries(),
-                creator.getNote().getText()
+                creator.getNote() != null ? creator.getNote().getText() : null
             );
     }
 }
