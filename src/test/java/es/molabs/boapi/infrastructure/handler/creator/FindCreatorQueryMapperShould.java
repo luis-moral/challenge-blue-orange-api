@@ -78,33 +78,43 @@ public class FindCreatorQueryMapperShould {
     }
 
     @Test public void
-    map_to_multi_value_map_with_filters_and_sorting() {
-        String id = "1";
-        String fullName = "Some Name";
-        String modified = "12445458745";
-        String comics = "5";
-        String series = "3";
-        String notes = "Some Notes";
+    map_to_multi_value_map_without_filters_or_sorting() {
+        FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        SortQuery sortQuery =
-            new SortQuery(
-                Arrays
-                    .asList(
-                    new SortQuery.SortQueryField(QUERY_COMICS, SortQuery.SortType.Ascending),
-                    new SortQuery.SortQueryField(QUERY_SERIES, SortQuery.SortType.Descending)
-                )
-            );
+        MultiValueMap<String, String> map = mapper.toMap(query);
 
+        assertMapFilters(map, query);
+
+        Assertions
+            .assertThat(map.get(QUERY_ORDER_BY))
+            .isNull();
+    }
+
+    @Test public void
+    map_to_multi_value_map_with_filters_and_without_sorting() {
+        FindCreatorQuery query = buildQuery();
+
+        MultiValueMap<String, String> map = mapper.toMap(query);
+
+        assertMapFilters(map, query);
+
+        Assertions
+            .assertThat(map.get(QUERY_ORDER_BY))
+            .isNull();
+    }
+
+    @Test public void
+    map_to_multi_value_map_without_filters_and_with_sorting() {
         FindCreatorQuery query =
             new FindCreatorQuery(
-                id,
-                fullName,
-                modified,
-                comics,
-                series,
-                notes,
-                sortQuery
-        );
+                new SortQuery(
+                    Arrays
+                        .asList(
+                            new SortQuery.SortQueryField(QUERY_COMICS, SortQuery.SortType.Ascending),
+                            new SortQuery.SortQueryField(QUERY_SERIES, SortQuery.SortType.Descending)
+                        )
+                )
+            );
 
         MultiValueMap<String, String> map = mapper.toMap(query);
 
@@ -113,6 +123,47 @@ public class FindCreatorQueryMapperShould {
         Assertions
             .assertThat(map.get(QUERY_ORDER_BY))
             .containsExactly(QUERY_COMICS, "-" + QUERY_SERIES);
+    }
+
+    @Test public void
+    map_to_multi_value_map_with_filters_and_sorting() {
+        FindCreatorQuery query =
+            buildQuery(
+                new SortQuery.SortQueryField(QUERY_COMICS, SortQuery.SortType.Ascending),
+                new SortQuery.SortQueryField(QUERY_SERIES, SortQuery.SortType.Descending)
+            );
+
+        MultiValueMap<String, String> map = mapper.toMap(query);
+
+        assertMapFilters(map, query);
+
+        Assertions
+            .assertThat(map.get(QUERY_ORDER_BY))
+            .containsExactly(QUERY_COMICS, "-" + QUERY_SERIES);
+    }
+
+    private FindCreatorQuery buildQuery() {
+        return buildQuery(null);
+    }
+
+    private FindCreatorQuery buildQuery(SortQuery.SortQueryField...fields) {
+        String id = "1";
+        String fullName = "Some Name";
+        String modified = "12445458745";
+        String comics = "5";
+        String series = "3";
+        String notes = "Some Notes";
+
+        return
+            new FindCreatorQuery(
+                id,
+                fullName,
+                modified,
+                comics,
+                series,
+                notes,
+                fields != null ? new SortQuery(Arrays.asList(fields)) : null
+            );
     }
 
     private MultiValueMap<String, String> buildQueryMap() {

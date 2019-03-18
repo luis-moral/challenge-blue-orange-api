@@ -13,6 +13,21 @@ public class FindCreatorQuery {
     private final SortQuery sortQuery;
 
     public FindCreatorQuery(
+            String id,
+            String fullName,
+            String modified,
+            String comics,
+            String series,
+            String notes
+    ) {
+        this(id, fullName, modified, comics, series, notes, null);
+    }
+
+    public FindCreatorQuery(SortQuery sortQuery) {
+        this(null, null, null, null, null, null, sortQuery);
+    }
+
+    public FindCreatorQuery(
         String id,
         String fullName,
         String modified,
