@@ -2,6 +2,7 @@ package es.molabs.boapi.infrastructure.handler.creator;
 
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import es.molabs.boapi.domain.creator.SortQuery;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -30,6 +31,19 @@ public class FindCreatorQueryMapper {
             );
     }
 
+    public MultiValueMap<String, String> toMap(FindCreatorQuery query) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        addFieldToMap(map, FIELD_ID, query.getId());
+        addFieldToMap(map, FIELD_FULL_NAME, query.getFullName());
+        addFieldToMap(map, FIELD_MODIFIED, query.getModified());
+        addFieldToMap(map, FIELD_COMICS, query.getComics());
+        addFieldToMap(map, FIELD_SERIES, query.getSeries());
+        addFieldToMap(map, FIELD_NOTES, query.getNotes());
+        addSortingToMap(map, query.getSortQuery());
+
+        return map;
+    }
+
     private SortQuery getSortQuery(MultiValueMap<String, String> queryParams) {
         SortQuery query = null;
         List<String> values = queryParams.get(FIELD_SORT_BY);
@@ -51,5 +65,28 @@ public class FindCreatorQueryMapper {
             value.startsWith("-")
             ? new SortQuery.SortQueryField(value.substring(1), SortQuery.SortType.Descending)
             : new SortQuery.SortQueryField(value, SortQuery.SortType.Ascending);
+    }
+
+    private void addFieldToMap(MultiValueMap<String, String> map, String field, String value) {
+        if (value != null) {
+            map.set(field, value);
+        }
+    }
+
+    private void addSortingToMap(MultiValueMap<String, String> map, SortQuery sortQuery) {
+        if (sortQuery != null && sortQuery.getFields() != null) {
+            sortQuery
+                .getFields()
+                .stream()
+                .forEach(
+                    sortQueryField ->
+                        map.add(
+                            FIELD_SORT_BY,
+                            sortQueryField.getType() == SortQuery.SortType.Ascending
+                                ? sortQueryField.getField()
+                                : "-" + sortQueryField.getField()
+                    )
+                );
+        }
     }
 }
