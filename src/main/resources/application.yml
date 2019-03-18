@@ -16,6 +16,8 @@ endpoint:
   base-path: /api
   creator:
     path: ${endpoint.base-path}/creator
+  health:
+    path: /status
 
 marvel:
   api:

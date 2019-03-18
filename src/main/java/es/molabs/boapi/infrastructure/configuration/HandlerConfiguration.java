@@ -4,6 +4,7 @@ import es.molabs.boapi.application.CreatorService;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorHandler;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorMapper;
 import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
+import es.molabs.boapi.infrastructure.handler.health.HealthHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,5 +18,10 @@ public class HandlerConfiguration {
         FindCreatorQueryMapper queryMapper
     ) {
         return new CreatorHandler(creatorService, creatorMapper, queryMapper);
+    }
+
+    @Bean
+    public HealthHandler healthHandler() {
+        return new HealthHandler();
     }
 }
