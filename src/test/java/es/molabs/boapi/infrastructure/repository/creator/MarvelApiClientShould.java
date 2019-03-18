@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +37,7 @@ public class MarvelApiClientShould {
         marvelApiMock = new WireMockServer(MARVEL_API_PORT);
         marvelApiMock.start();
 
-        marvelApiClient = new MarvelApiClient("localhost", MARVEL_API_PORT, MARVEL_API_KEY);
+        marvelApiClient = new MarvelApiClient("http://localhost:" + MARVEL_API_PORT, MARVEL_API_KEY, WebClient.create());
     }
 
     @After

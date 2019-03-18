@@ -4,15 +4,14 @@ import es.molabs.boapi.infrastructure.repository.creator.MarvelApiClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 import redis.clients.jedis.Jedis;
 
 @Configuration
 public class ClientConfiguration {
 
-    @Value("${marvel.api.host}")
-    private String marvelApiHost;
-    @Value("${marvel.api.port}")
-    private int marvelApiPort;
+    @Value("${marvel.api.base-url}")
+    private String marvelbaseUrl;
     @Value("${marvel.api.key}")
     private String marvelApiKey;
 
@@ -22,8 +21,13 @@ public class ClientConfiguration {
     private int redisPort;
 
     @Bean
-    public MarvelApiClient marvelApiClient() {
-        return new MarvelApiClient(marvelApiHost, marvelApiPort, marvelApiKey);
+    public WebClient webClient() {
+        return WebClient.create();
+    }
+
+    @Bean
+    public MarvelApiClient marvelApiClient(WebClient webClient) {
+        return new MarvelApiClient(marvelbaseUrl, marvelApiKey, webClient);
     }
 
     @Bean

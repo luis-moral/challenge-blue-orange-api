@@ -21,6 +21,5 @@ endpoint:
 
 marvel:
   api:
-    host: https://gateway.marvel.com
-    port: 443
+    base-url: https://gateway.marvel.com
     key: abcdefg12345
