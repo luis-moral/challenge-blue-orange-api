@@ -6,7 +6,7 @@ public class CreatorNote {
 
     private final int id;
     private final int creatorId;
-    private final String text;
+    private String text;
 
     private CreatorNote() {
         this(0, 0, null);
@@ -28,6 +28,10 @@ public class CreatorNote {
 
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
