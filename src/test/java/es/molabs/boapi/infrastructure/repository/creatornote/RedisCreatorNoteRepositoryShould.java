@@ -61,6 +61,11 @@ public class RedisCreatorNoteRepositoryShould {
             .create(creatorNoteRepository.findById(firstNote.getId()))
             .expectNext(firstNote)
             .verifyComplete();
+
+        StepVerifier
+            .create(creatorNoteRepository.findById(5))
+            .expectNextCount(0)
+            .verifyComplete();
     }
 
     @Test public void
@@ -76,6 +81,11 @@ public class RedisCreatorNoteRepositoryShould {
         StepVerifier
             .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
             .expectNext(firstNote)
+            .verifyComplete();
+
+        StepVerifier
+            .create(creatorNoteRepository.findByCreatorId(500))
+            .expectNextCount(0)
             .verifyComplete();
     }
 
