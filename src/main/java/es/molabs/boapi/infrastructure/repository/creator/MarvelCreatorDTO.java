@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MarvelCreatorDTO {
 
@@ -46,6 +48,23 @@ public class MarvelCreatorDTO {
 
     public int getSeries() {
         return series;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MarvelCreatorDTO that = (MarvelCreatorDTO) o;
+        return id == that.id &&
+                comics == that.comics &&
+                series == that.series &&
+                Objects.equals(fullName, that.fullName) &&
+                Objects.equals(modified, that.modified);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, modified, comics, series);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

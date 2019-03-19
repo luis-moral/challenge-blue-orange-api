@@ -13,14 +13,6 @@ import java.util.List;
 
 public class FindCreatorQueryMapperShould {
 
-    private static final String QUERY_ID = "id";
-    private static final String QUERY_FULL_NAME = "fullName";
-    private static final String QUERY_MODIFIED = "modified";
-    private static final String QUERY_COMICS = "comics";
-    private static final String QUERY_SERIES = "series";
-    private static final String QUERY_NOTES = "notes";
-    private static final String QUERY_ORDER_BY = "orderBy";
-
     private FindCreatorQueryMapper mapper;
 
     @Before
@@ -55,26 +47,31 @@ public class FindCreatorQueryMapperShould {
     @Test public void
     map_from_multi_value_map_without_filters_and_with_sorting() {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put(QUERY_ORDER_BY, Arrays.asList(QUERY_ID, "-" + QUERY_COMICS, QUERY_SERIES));
+        map
+            .put(
+                FindCreatorQueryMapper.FIELD_SORT_BY,
+                Arrays.asList(FindCreatorQueryMapper.FIELD_ID, "-" + FindCreatorQueryMapper.FIELD_COMICS, FindCreatorQueryMapper.FIELD_SERIES)
+            );
 
         FindCreatorQuery query = mapper.from(map);
 
         assertFiltersNull(query);
-        assertOrder(QUERY_ID, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(0));
-        assertOrder(QUERY_COMICS, SortQuery.SortType.Descending, query.getSortQuery().getFields().get(1));
-        assertOrder(QUERY_SERIES, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(2));
+        assertOrder(FindCreatorQueryMapper.FIELD_ID, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(0));
+        assertOrder(FindCreatorQueryMapper.FIELD_COMICS, SortQuery.SortType.Descending, query.getSortQuery().getFields().get(1));
+        assertOrder(FindCreatorQueryMapper.FIELD_SERIES, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(2));
     }
 
     @Test public void
     map_from_multi_value_map_with_filters_and_sorting() {
-        MultiValueMap<String, String> map = buildQueryMap(Arrays.asList(QUERY_ID, "-" + QUERY_COMICS, QUERY_SERIES));
+        MultiValueMap<String, String> map =
+            buildQueryMap(Arrays.asList(FindCreatorQueryMapper.FIELD_ID, "-" + FindCreatorQueryMapper.FIELD_COMICS, FindCreatorQueryMapper.FIELD_SERIES));
 
         FindCreatorQuery query = mapper.from(map);
 
         assertQueryFilters(query, map);
-        assertOrder(QUERY_ID, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(0));
-        assertOrder(QUERY_COMICS, SortQuery.SortType.Descending, query.getSortQuery().getFields().get(1));
-        assertOrder(QUERY_SERIES, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(2));
+        assertOrder(FindCreatorQueryMapper.FIELD_ID, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(0));
+        assertOrder(FindCreatorQueryMapper.FIELD_COMICS, SortQuery.SortType.Descending, query.getSortQuery().getFields().get(1));
+        assertOrder(FindCreatorQueryMapper.FIELD_SERIES, SortQuery.SortType.Ascending, query.getSortQuery().getFields().get(2));
     }
 
     @Test public void
@@ -86,7 +83,7 @@ public class FindCreatorQueryMapperShould {
         assertMapFilters(map, query);
 
         Assertions
-            .assertThat(map.get(QUERY_ORDER_BY))
+            .assertThat(map.get(FindCreatorQueryMapper.FIELD_SORT_BY))
             .isNull();
     }
 
@@ -99,7 +96,7 @@ public class FindCreatorQueryMapperShould {
         assertMapFilters(map, query);
 
         Assertions
-            .assertThat(map.get(QUERY_ORDER_BY))
+            .assertThat(map.get(FindCreatorQueryMapper.FIELD_SORT_BY))
             .isNull();
     }
 
@@ -110,8 +107,8 @@ public class FindCreatorQueryMapperShould {
                 new SortQuery(
                     Arrays
                         .asList(
-                            new SortQuery.SortQueryField(QUERY_COMICS, SortQuery.SortType.Ascending),
-                            new SortQuery.SortQueryField(QUERY_SERIES, SortQuery.SortType.Descending)
+                            new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_COMICS, SortQuery.SortType.Ascending),
+                            new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_SERIES, SortQuery.SortType.Descending)
                         )
                 )
             );
@@ -121,16 +118,16 @@ public class FindCreatorQueryMapperShould {
         assertMapFilters(map, query);
 
         Assertions
-            .assertThat(map.get(QUERY_ORDER_BY))
-            .containsExactly(QUERY_COMICS, "-" + QUERY_SERIES);
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_SORT_BY))
+            .isEqualTo(FindCreatorQueryMapper.FIELD_COMICS + ",-" + FindCreatorQueryMapper.FIELD_SERIES);
     }
 
     @Test public void
     map_to_multi_value_map_with_filters_and_sorting() {
         FindCreatorQuery query =
             buildQuery(
-                new SortQuery.SortQueryField(QUERY_COMICS, SortQuery.SortType.Ascending),
-                new SortQuery.SortQueryField(QUERY_SERIES, SortQuery.SortType.Descending)
+                new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_COMICS, SortQuery.SortType.Ascending),
+                new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_SERIES, SortQuery.SortType.Descending)
             );
 
         MultiValueMap<String, String> map = mapper.toMap(query);
@@ -138,8 +135,8 @@ public class FindCreatorQueryMapperShould {
         assertMapFilters(map, query);
 
         Assertions
-            .assertThat(map.get(QUERY_ORDER_BY))
-            .containsExactly(QUERY_COMICS, "-" + QUERY_SERIES);
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_SORT_BY))
+            .isEqualTo(FindCreatorQueryMapper.FIELD_COMICS + ",-" + FindCreatorQueryMapper.FIELD_SERIES);
     }
 
     private FindCreatorQuery buildQuery() {
@@ -179,15 +176,15 @@ public class FindCreatorQueryMapperShould {
         String notes = "Some Notes";
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.set(QUERY_ID, id);
-        map.set(QUERY_FULL_NAME, fullName);
-        map.set(QUERY_MODIFIED, modified);
-        map.set(QUERY_COMICS, comics);
-        map.set(QUERY_SERIES, series);
-        map.set(QUERY_NOTES, notes);
+        map.set(FindCreatorQueryMapper.FIELD_ID, id);
+        map.set(FindCreatorQueryMapper.FIELD_FULL_NAME, fullName);
+        map.set(FindCreatorQueryMapper.FIELD_MODIFIED, modified);
+        map.set(FindCreatorQueryMapper.FIELD_COMICS, comics);
+        map.set(FindCreatorQueryMapper.FIELD_SERIES, series);
+        map.set(FindCreatorQueryMapper.FIELD_NOTES, notes);
 
         if (sorting != null) {
-            map.put(QUERY_ORDER_BY, sorting);
+            map.put(FindCreatorQueryMapper.FIELD_SORT_BY, sorting);
         }
 
         return map;
@@ -196,27 +193,27 @@ public class FindCreatorQueryMapperShould {
     private void assertQueryFilters(FindCreatorQuery query, MultiValueMap<String, String> map) {
         Assertions
             .assertThat(query.getId())
-            .isEqualTo(map.getFirst(QUERY_ID));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_ID));
 
         Assertions
             .assertThat(query.getFullName())
-            .isEqualTo(map.getFirst(QUERY_FULL_NAME));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_FULL_NAME));
 
         Assertions
             .assertThat(query.getModified())
-            .isEqualTo(map.getFirst(QUERY_MODIFIED));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_MODIFIED));
 
         Assertions
             .assertThat(query.getComics())
-            .isEqualTo(map.getFirst(QUERY_COMICS));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_COMICS));
 
         Assertions
             .assertThat(query.getSeries())
-            .isEqualTo(map.getFirst(QUERY_SERIES));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_SERIES));
 
         Assertions
             .assertThat(query.getNotes())
-            .isEqualTo(map.getFirst(QUERY_NOTES));
+            .isEqualTo(map.getFirst(FindCreatorQueryMapper.FIELD_NOTES));
     }
 
     private void assertFiltersNull(FindCreatorQuery query) {
@@ -257,27 +254,27 @@ public class FindCreatorQueryMapperShould {
 
     private void assertMapFilters(MultiValueMap<String, String> map, FindCreatorQuery query) {
         Assertions
-            .assertThat(map.getFirst(QUERY_ID))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_ID))
             .isEqualTo(query.getId());
 
         Assertions
-            .assertThat(map.getFirst(QUERY_FULL_NAME))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_FULL_NAME))
             .isEqualTo(query.getFullName());
 
         Assertions
-            .assertThat(map.getFirst(QUERY_MODIFIED))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_MODIFIED))
             .isEqualTo(query.getModified());
 
         Assertions
-            .assertThat(map.getFirst(QUERY_COMICS))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_COMICS))
             .isEqualTo(query.getComics());
 
         Assertions
-            .assertThat(map.getFirst(QUERY_SERIES))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_SERIES))
             .isEqualTo(query.getSeries());
 
         Assertions
-            .assertThat(map.getFirst(QUERY_NOTES))
+            .assertThat(map.getFirst(FindCreatorQueryMapper.FIELD_NOTES))
             .isEqualTo(query.getNotes());
     }
 }

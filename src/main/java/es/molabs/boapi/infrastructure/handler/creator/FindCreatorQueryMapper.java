@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 public class FindCreatorQueryMapper {
 
-    private static final String FIELD_ID = "id";
-    private static final String FIELD_FULL_NAME = "fullName";
-    private static final String FIELD_MODIFIED = "modified";
-    private static final String FIELD_COMICS = "comics";
-    private static final String FIELD_SERIES = "series";
-    private static final String FIELD_NOTES = "notes";
-    private static final String FIELD_SORT_BY = "orderBy";
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_FULL_NAME = "fullName";
+    public static final String FIELD_MODIFIED = "modified";
+    public static final String FIELD_COMICS = "comics";
+    public static final String FIELD_SERIES = "series";
+    public static final String FIELD_NOTES = "notes";
+    public static final String FIELD_SORT_BY = "orderBy";
 
     public FindCreatorQuery from(MultiValueMap<String, String> queryParams) {
         return
@@ -75,18 +75,15 @@ public class FindCreatorQueryMapper {
 
     private void addSortingToMap(MultiValueMap<String, String> map, SortQuery sortQuery) {
         if (sortQuery != null && sortQuery.getFields() != null) {
-            sortQuery
-                .getFields()
-                .stream()
-                .forEach(
-                    sortQueryField ->
-                        map.add(
-                            FIELD_SORT_BY,
-                            sortQueryField.getType() == SortQuery.SortType.Ascending
-                                ? sortQueryField.getField()
-                                : "-" + sortQueryField.getField()
-                    )
-                );
+            map
+                .add(
+                    FIELD_SORT_BY,
+                    sortQuery
+                        .getFields()
+                        .stream()
+                        .map(field -> field.getType() == SortQuery.SortType.Ascending ? field.getField() : "-" + field.getField())
+                        .collect(Collectors.joining(","))
+            );
         }
     }
 }
