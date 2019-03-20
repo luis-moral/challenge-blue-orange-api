@@ -52,14 +52,14 @@ public class CreatorNoteHandlerShould {
 
     @Test public void
     edit_a_creator_note() throws JsonProcessingException {
-        int noteId = 1;
+        int id = 1;
         String text = "Some text";
 
         EditCreatorNoteDTO editNoteDTO = new EditCreatorNoteDTO(text);
 
         webTestClient
             .put()
-                .uri(builder -> builder.path(creatorNotePath).build(noteId))
+                .uri(builder -> builder.path(creatorNotePath).build(id))
                 .syncBody(objectMapper.writeValueAsString(editNoteDTO))
             .exchange()
                 .expectStatus()
@@ -67,22 +67,22 @@ public class CreatorNoteHandlerShould {
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
-            .editCreatorNote(editNoteDTO);
+            .editCreatorNote(id, editNoteDTO);
     }
 
     @Test public void
     delete_a_creator_note() {
-        int noteId = 1;
+        int id = 1;
 
         webTestClient
             .delete()
-                .uri(builder -> builder.path(creatorNotePath).build(noteId))
+                .uri(builder -> builder.path(creatorNotePath).build(id))
             .exchange()
                 .expectStatus()
                     .isOk();
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
-            .deleteCreatorNote(noteId);
+            .deleteCreatorNote(id);
     }
 }

@@ -5,12 +5,15 @@ import es.molabs.boapi.domain.creator.SortQuery;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class FindCreatorQueryMapperShould {
 
     private FindCreatorQueryMapper mapper;

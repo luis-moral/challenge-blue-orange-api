@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuples;
 
 import java.io.IOException;
 
@@ -53,11 +54,12 @@ public class CreatorNoteHandler {
                         throw new RuntimeException(IOe);
                     }
                 })
-                .doOnNext(dto -> creatorNoteService.editCreatorNote(dto))
-                .flatMap(dto ->
+                .map(dto -> Tuples.of(Integer.parseInt(serverRequest.pathVariable("id")), dto))
+                .doOnNext(tuple -> creatorNoteService.editCreatorNote(tuple.getT1(), tuple.getT2()))
+                .flatMap(tuple ->
                     ServerResponse
                         .ok()
-                        .body(Mono.just(dto), EditCreatorNoteDTO.class)
+                        .body(Mono.just(tuple.getT2()), EditCreatorNoteDTO.class)
                 );
     }
 

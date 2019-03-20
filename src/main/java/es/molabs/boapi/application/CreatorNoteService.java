@@ -16,15 +16,15 @@ public class CreatorNoteService {
         throw new UnsupportedOperationException();
     }
 
-    public void addCreatorNote(AddCreatorNoteDTO addCreatorNoteDTO) {
-        throw new UnsupportedOperationException();
+    public void addCreatorNote(AddCreatorNoteDTO dto) {
+        creatorNoteRepository.add(dto);
     }
 
-    public void editCreatorNote(EditCreatorNoteDTO editCreatorNoteDTO) {
-        throw new UnsupportedOperationException();
+    public void editCreatorNote(int id, EditCreatorNoteDTO dto) {
+        creatorNoteRepository.set(id, dto);
     }
 
     public void deleteCreatorNote(int id) {
-        throw new UnsupportedOperationException();
+        creatorNoteRepository.deleteById(id);
     }
 }
