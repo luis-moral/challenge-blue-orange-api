@@ -98,7 +98,7 @@ public class CreatorNoteFeature {
 
         webTestClient
             .post()
-                .uri(builder -> builder.path(creatorNotePath).build())
+                .uri(builder -> builder.path(creatorNotePath).build(creatorId))
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
@@ -117,7 +117,7 @@ public class CreatorNoteFeature {
 
         webTestClient
             .put()
-                .uri(builder -> builder.path(creatorNotePath + "/" + noteId).build())
+                .uri(builder -> builder.path(creatorNotePath).build(noteId))
                 .syncBody(objectMapper.writeValueAsString(editDTO))
             .exchange()
                 .expectStatus()
@@ -133,7 +133,7 @@ public class CreatorNoteFeature {
     private void assertDeleteNote(int noteId) throws JsonProcessingException {
         webTestClient
             .delete()
-                .uri(builder -> builder.path(creatorNotePath + "/" + noteId).build())
+                .uri(builder -> builder.path(creatorNotePath).build(noteId))
             .exchange()
                 .expectStatus()
                    .isOk();

@@ -13,7 +13,7 @@ endpoint:
   creators:
     path: ${endpoint.base-path}/creators
   creator-note:
-    path: ${endpoint.base-path}/creator/note
+    path: ${endpoint.base-path}/creator/note/{id}
   health:
     path: /status
 

@@ -39,7 +39,7 @@ public class CreatorNoteHandlerShould {
 
         webTestClient
             .post()
-                .uri(builder -> builder.path(creatorNotePath).build())
+                .uri(builder -> builder.path(creatorNotePath).build(creatorId))
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
@@ -59,7 +59,7 @@ public class CreatorNoteHandlerShould {
 
         webTestClient
             .put()
-                .uri(builder -> builder.path(creatorNotePath + "/" + noteId).build())
+                .uri(builder -> builder.path(creatorNotePath).build(noteId))
                 .syncBody(objectMapper.writeValueAsString(editNoteDTO))
             .exchange()
                 .expectStatus()
@@ -76,7 +76,7 @@ public class CreatorNoteHandlerShould {
 
         webTestClient
             .delete()
-                .uri(builder -> builder.path(creatorNotePath + "/" + noteId).build())
+                .uri(builder -> builder.path(creatorNotePath).build(noteId))
             .exchange()
                 .expectStatus()
                     .isOk();

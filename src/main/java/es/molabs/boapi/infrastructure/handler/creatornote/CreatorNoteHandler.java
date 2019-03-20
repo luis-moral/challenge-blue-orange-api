@@ -43,10 +43,34 @@ public class CreatorNoteHandler {
     }
 
     public Mono<ServerResponse> editCreatorNote(ServerRequest serverRequest) {
-        throw new UnsupportedOperationException();
+        return
+            serverRequest
+                .bodyToMono(String.class)
+                .map(body -> {
+                    try {
+                        return objectMapper.readValue(body, EditCreatorNoteDTO.class);
+                    } catch (IOException IOe) {
+                        throw new RuntimeException(IOe);
+                    }
+                })
+                .doOnNext(dto -> creatorNoteService.editCreatorNote(dto))
+                .flatMap(dto ->
+                    ServerResponse
+                        .ok()
+                        .body(Mono.just(dto), EditCreatorNoteDTO.class)
+                );
     }
 
     public Mono<ServerResponse> deleteCreatorNote(ServerRequest serverRequest) {
-        throw new UnsupportedOperationException();
+        return
+            Mono
+                .fromCallable(() -> serverRequest.pathVariable("id"))
+                .map(Integer::parseInt)
+                .doOnNext(id -> creatorNoteService.deleteCreatorNote(id))
+                .then(
+                    ServerResponse
+                        .ok()
+                        .body(Mono.empty(), String.class)
+                );
     }
 }
