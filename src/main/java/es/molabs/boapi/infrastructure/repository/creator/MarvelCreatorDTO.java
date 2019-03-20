@@ -56,10 +56,10 @@ public class MarvelCreatorDTO {
         if (o == null || getClass() != o.getClass()) return false;
         MarvelCreatorDTO that = (MarvelCreatorDTO) o;
         return id == that.id &&
-                comics == that.comics &&
-                series == that.series &&
-                Objects.equals(fullName, that.fullName) &&
-                Objects.equals(modified, that.modified);
+            comics == that.comics &&
+            series == that.series &&
+            Objects.equals(fullName, that.fullName) &&
+            Objects.equals(modified, that.modified);
     }
 
     @Override

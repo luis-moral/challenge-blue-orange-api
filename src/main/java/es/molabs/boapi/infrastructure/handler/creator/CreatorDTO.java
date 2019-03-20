@@ -63,11 +63,11 @@ public class CreatorDTO {
         if (o == null || getClass() != o.getClass()) return false;
         CreatorDTO that = (CreatorDTO) o;
         return id == that.id &&
-                comics == that.comics &&
-                series == that.series &&
-                Objects.equals(fullName, that.fullName) &&
-                Objects.equals(modified, that.modified) &&
-                Objects.equals(note, that.note);
+            comics == that.comics &&
+            series == that.series &&
+            Objects.equals(fullName, that.fullName) &&
+            Objects.equals(modified, that.modified) &&
+            Objects.equals(note, that.note);
     }
 
     @Override

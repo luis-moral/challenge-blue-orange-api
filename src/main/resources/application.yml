@@ -11,7 +11,7 @@ server:
 endpoint:
   base-path: /api
   creator:
-    path: ${endpoint.base-path}/creator
+    path: ${endpoint.base-path}/creators
   health:
     path: /status
 

@@ -40,8 +40,8 @@ public class CreatorNote {
         if (o == null || getClass() != o.getClass()) return false;
         CreatorNote that = (CreatorNote) o;
         return id == that.id &&
-                creatorId == that.creatorId &&
-                Objects.equals(text, that.text);
+            creatorId == that.creatorId &&
+            Objects.equals(text, that.text);
     }
 
     @Override
