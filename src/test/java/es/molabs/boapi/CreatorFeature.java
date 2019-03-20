@@ -70,7 +70,9 @@ public class CreatorFeature {
 
 	@After
 	public void tearDown() {
-		marvelApiMock.stop();
+		if (marvelApiMock.isRunning()) {
+			marvelApiMock.stop();
+		}
 	}
 
 	@Test public void

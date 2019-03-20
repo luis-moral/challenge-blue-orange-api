@@ -12,6 +12,8 @@ endpoint:
   base-path: /api
   creator:
     path: ${endpoint.base-path}/creators
+  creator-note:
+    path: ${endpoint.base-path}/creator/note
   health:
     path: /status
 
