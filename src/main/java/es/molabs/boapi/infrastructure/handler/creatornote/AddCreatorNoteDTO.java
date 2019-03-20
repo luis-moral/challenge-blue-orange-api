@@ -17,7 +17,7 @@ public class AddCreatorNoteDTO {
     @JsonCreator
     public AddCreatorNoteDTO(
         @JsonProperty("creatorId") int creatorId,
-        @JsonProperty("note") String text)
+        @JsonProperty("text") String text)
     {
         this.creatorId = creatorId;
         this.text = text;

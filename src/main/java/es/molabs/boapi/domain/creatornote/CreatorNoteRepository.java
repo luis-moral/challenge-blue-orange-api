@@ -1,5 +1,7 @@
 package es.molabs.boapi.domain.creatornote;
 
+import es.molabs.boapi.infrastructure.handler.creatornote.AddCreatorNoteDTO;
+import es.molabs.boapi.infrastructure.handler.creatornote.EditCreatorNoteDTO;
 import reactor.core.publisher.Mono;
 
 public interface CreatorNoteRepository {
@@ -8,9 +10,9 @@ public interface CreatorNoteRepository {
 
     Mono<CreatorNote> findByCreatorId(int creatorId);
 
-    void add(CreatorNote note);
+    void add(AddCreatorNoteDTO dto);
 
-    void set(CreatorNote note);
+    void set(int id, EditCreatorNoteDTO dt);
 
     void deleteById(int id);
 }

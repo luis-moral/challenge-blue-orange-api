@@ -14,7 +14,7 @@ public class EditCreatorNoteDTO {
     private final String text;
 
     @JsonCreator
-    public EditCreatorNoteDTO(@JsonProperty("note") String text) {
+    public EditCreatorNoteDTO(@JsonProperty("text") String text) {
         this.text = text;
     }
 

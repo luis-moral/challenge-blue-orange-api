@@ -2,6 +2,8 @@ package es.molabs.boapi.infrastructure.repository.creatornote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
+import es.molabs.boapi.infrastructure.handler.creatornote.AddCreatorNoteDTO;
+import es.molabs.boapi.infrastructure.handler.creatornote.EditCreatorNoteDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -53,9 +55,9 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
         CreatorNote thirdNote = new CreatorNote(3, 103, "Third");
 
-        creatorNoteRepository.add(firstNote);
-        creatorNoteRepository.add(secondNote);
-        creatorNoteRepository.add(thirdNote);
+        creatorNoteRepository.add(new AddCreatorNoteDTO(firstNote.getCreatorId(), firstNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(secondNote.getCreatorId(), secondNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(thirdNote.getCreatorId(), thirdNote.getText()));
 
         StepVerifier
             .create(creatorNoteRepository.findById(firstNote.getId()))
@@ -74,9 +76,9 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
         CreatorNote thirdNote = new CreatorNote(3, 103, "Third");
 
-        creatorNoteRepository.add(firstNote);
-        creatorNoteRepository.add(secondNote);
-        creatorNoteRepository.add(thirdNote);
+        creatorNoteRepository.add(new AddCreatorNoteDTO(firstNote.getCreatorId(), firstNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(secondNote.getCreatorId(), secondNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(thirdNote.getCreatorId(), thirdNote.getText()));
 
         StepVerifier
             .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
@@ -94,8 +96,8 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
 
-        creatorNoteRepository.add(firstNote);
-        creatorNoteRepository.add(secondNote);
+        creatorNoteRepository.add(new AddCreatorNoteDTO(firstNote.getCreatorId(), firstNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(secondNote.getCreatorId(), secondNote.getText()));
 
         StepVerifier
             .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
@@ -113,12 +115,12 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
 
-        creatorNoteRepository.add(firstNote);
-        creatorNoteRepository.add(secondNote);
+        creatorNoteRepository.add(new AddCreatorNoteDTO(firstNote.getCreatorId(), firstNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(secondNote.getCreatorId(), secondNote.getText()));
 
         firstNote.setText("Other Text");
 
-        creatorNoteRepository.set(firstNote);
+        creatorNoteRepository.set(firstNote.getId(), new EditCreatorNoteDTO(firstNote.getText()));
 
         StepVerifier
             .create(creatorNoteRepository.findById(firstNote.getId()))
@@ -135,8 +137,8 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
 
-        creatorNoteRepository.add(firstNote);
-        creatorNoteRepository.add(secondNote);
+        creatorNoteRepository.add(new AddCreatorNoteDTO(firstNote.getCreatorId(), firstNote.getText()));
+        creatorNoteRepository.add(new AddCreatorNoteDTO(secondNote.getCreatorId(), secondNote.getText()));
 
         creatorNoteRepository.deleteById(firstNote.getId());
 
