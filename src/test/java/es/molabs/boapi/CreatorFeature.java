@@ -44,7 +44,7 @@ public class CreatorFeature {
 	private static final CreatorDTO NONE = new CreatorDTO(7968, "", "-0001-11-30T00:00:00-0500", 0, 0, null);
 	private static final CreatorDTO ARK = new CreatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", 1, 1, null);
 
-	@Value("${endpoint.creator.path}")
+	@Value("${endpoint.creators.path}")
 	private String creatorsPath;
 	@Value("${marvel.api.base-url}")
 	private String marvelBaseUrl;

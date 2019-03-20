@@ -10,7 +10,7 @@ server:
 
 endpoint:
   base-path: /api
-  creator:
+  creators:
     path: ${endpoint.base-path}/creators
   creator-note:
     path: ${endpoint.base-path}/creator/note

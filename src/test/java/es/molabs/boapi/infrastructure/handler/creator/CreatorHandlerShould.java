@@ -32,7 +32,7 @@ public class CreatorHandlerShould {
     private static final Map<String, String> NO_FILTERS = null;
     private static final List<String> NO_SORTING = null;
 
-    @Value("${endpoint.creator.path}")
+    @Value("${endpoint.creators.path}")
     private String creatorsPath;
 
     @Autowired
