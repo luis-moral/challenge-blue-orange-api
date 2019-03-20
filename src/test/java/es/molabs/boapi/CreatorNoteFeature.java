@@ -113,7 +113,7 @@ public class CreatorNoteFeature {
 
     private void assertEditNote(int noteId, int creatorId, String text) throws JsonProcessingException {
         EditCreatorNoteDTO editDTO = new EditCreatorNoteDTO(text);
-        CreatorNoteDTO noteDto = new CreatorNoteDTO(noteId, creatorId, text);
+        CreatorNoteDTO noteNoteDto = new CreatorNoteDTO(noteId, creatorId, text);
 
         webTestClient
             .put()
@@ -126,7 +126,7 @@ public class CreatorNoteFeature {
                     .consumeWith(response ->
                         Assertions
                             .assertThat(response.getResponseBody())
-                            .isEqualTo(noteDto)
+                            .isEqualTo(noteNoteDto)
                     );
     }
 
