@@ -2,8 +2,6 @@ package es.molabs.boapi.application;
 
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
-import es.molabs.boapi.infrastructure.handler.creatornote.AddCreatorNoteDTO;
-import es.molabs.boapi.infrastructure.handler.creatornote.EditCreatorNoteDTO;
 import reactor.core.publisher.Mono;
 
 public class CreatorNoteService {
@@ -18,14 +16,14 @@ public class CreatorNoteService {
         return creatorNoteRepository.findById(id);
     }
 
-    public Mono<CreatorNote> addCreatorNote(AddCreatorNoteDTO dto) {
-        return creatorNoteRepository.add(dto.getCreatorId(), dto.getText());
+    public Mono<CreatorNote> addCreatorNote(int creatorId, String text) {
+        return creatorNoteRepository.add(creatorId, text);
     }
 
-    public Mono<CreatorNote> editCreatorNote(int id, EditCreatorNoteDTO dto) {
+    public Mono<CreatorNote> editCreatorNote(int id, String text) {
         return
             Mono
-                .fromRunnable(() -> creatorNoteRepository.set(id, dto.getText()))
+                .fromRunnable(() -> creatorNoteRepository.set(id, text))
                 .then(creatorNoteRepository.findById(id));
     }
 

@@ -43,7 +43,7 @@ public class CreatorNoteHandlerShould {
         CreatorNote creatorNote = new CreatorNote(creatorNoteDTO.getId(), creatorNoteDTO.getCreatorId(), creatorNoteDTO.getText());
 
         Mockito
-            .when(creatorNoteService.addCreatorNote(addNoteDto))
+            .when(creatorNoteService.addCreatorNote(creatorId, text))
             .thenReturn(Mono.just(creatorNote));
 
         webTestClient
@@ -62,7 +62,7 @@ public class CreatorNoteHandlerShould {
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
-            .addCreatorNote(addNoteDto);
+            .addCreatorNote(creatorId, text);
     }
 
     @Test public void
@@ -75,7 +75,7 @@ public class CreatorNoteHandlerShould {
         CreatorNote creatorNote = new CreatorNote(creatorNoteDTO.getId(), creatorNoteDTO.getCreatorId(), creatorNoteDTO.getText());
 
         Mockito
-            .when(creatorNoteService.editCreatorNote(id, editNoteDTO))
+            .when(creatorNoteService.editCreatorNote(id, text))
             .thenReturn(Mono.just(creatorNote));
 
         webTestClient
@@ -94,7 +94,7 @@ public class CreatorNoteHandlerShould {
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
-            .editCreatorNote(id, editNoteDTO);
+            .editCreatorNote(id, text);
     }
 
     @Test public void

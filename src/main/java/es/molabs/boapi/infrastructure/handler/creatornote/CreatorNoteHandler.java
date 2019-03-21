@@ -30,7 +30,7 @@ public class CreatorNoteHandler {
             serverRequest
                 .bodyToMono(String.class)
                 .map(body -> readValue(body, AddCreatorNoteDTO.class))
-                .flatMap(dto -> creatorNoteService.addCreatorNote(dto))
+                .flatMap(dto -> creatorNoteService.addCreatorNote(dto.getCreatorId(), dto.getText()))
                 .map(creatorNoteMapper::toCreatorNoteDTO)
                 .flatMap(dto ->
                     ServerResponse
@@ -44,7 +44,7 @@ public class CreatorNoteHandler {
             serverRequest
                 .bodyToMono(String.class)
                 .map(body -> readValue(body, EditCreatorNoteDTO.class))
-                .flatMap(dto -> creatorNoteService.editCreatorNote(Integer.parseInt(serverRequest.pathVariable("id")), dto))
+                .flatMap(dto -> creatorNoteService.editCreatorNote(Integer.parseInt(serverRequest.pathVariable("id")), dto.getText()))
                 .map(creatorNoteMapper::toCreatorNoteDTO)
                 .flatMap(dto ->
                     ServerResponse

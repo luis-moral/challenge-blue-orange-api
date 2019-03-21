@@ -52,7 +52,7 @@ public class CreatorNoteServiceShould {
             .thenReturn(Mono.just(creatorNote));
 
         StepVerifier
-            .create(creatorNoteService.addCreatorNote(addNoteDto))
+            .create(creatorNoteService.addCreatorNote(addNoteDto.getCreatorId(), addNoteDto.getText()))
             .expectNext(creatorNote)
             .verifyComplete();
 
@@ -72,7 +72,7 @@ public class CreatorNoteServiceShould {
             .thenReturn(Mono.just(creatorNote));
 
         StepVerifier
-            .create(creatorNoteService.editCreatorNote(id, editNoteDto))
+            .create(creatorNoteService.editCreatorNote(id, editNoteDto.getText()))
             .expectNext(creatorNote)
             .verifyComplete();
 
