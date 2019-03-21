@@ -8,7 +8,7 @@ public interface CreatorNoteRepository {
 
     Mono<CreatorNote> findByCreatorId(int creatorId);
 
-    void add(int creatorId, String text);
+    Mono<CreatorNote> add(int creatorId, String text);
 
     void set(int id, String text);
 

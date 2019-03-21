@@ -12,6 +12,7 @@ import reactor.test.StepVerifier;
 import redis.clients.jedis.Jedis;
 import redis.embedded.RedisServer;
 
+import java.util.Arrays;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
@@ -52,10 +53,7 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
         CreatorNote thirdNote = new CreatorNote(3, 103, "Third");
-
-        creatorNoteRepository.add(firstNote.getCreatorId(), firstNote.getText());
-        creatorNoteRepository.add(secondNote.getCreatorId(), secondNote.getText());
-        creatorNoteRepository.add(thirdNote.getCreatorId(), thirdNote.getText());
+        addCreatorNotes(firstNote, secondNote, thirdNote);
 
         StepVerifier
             .create(creatorNoteRepository.findById(firstNote.getId()))
@@ -73,10 +71,7 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
         CreatorNote thirdNote = new CreatorNote(3, 103, "Third");
-
-        creatorNoteRepository.add(firstNote.getCreatorId(), firstNote.getText());
-        creatorNoteRepository.add(secondNote.getCreatorId(), secondNote.getText());
-        creatorNoteRepository.add(thirdNote.getCreatorId(), thirdNote.getText());
+        addCreatorNotes(firstNote, secondNote, thirdNote);
 
         StepVerifier
             .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
@@ -93,9 +88,8 @@ public class RedisCreatorNoteRepositoryShould {
     add_creator_note_and_index_by_creator_id() {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
-
-        creatorNoteRepository.add(firstNote.getCreatorId(), firstNote.getText());
-        creatorNoteRepository.add(secondNote.getCreatorId(), secondNote.getText());
+        
+        addCreatorNotes(firstNote, secondNote);
 
         StepVerifier
             .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
@@ -113,9 +107,7 @@ public class RedisCreatorNoteRepositoryShould {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
         String otherText = "Other text";
-
-        creatorNoteRepository.add(firstNote.getCreatorId(), firstNote.getText());
-        creatorNoteRepository.add(secondNote.getCreatorId(), secondNote.getText());
+        addCreatorNotes(firstNote, secondNote);
 
         creatorNoteRepository.set(firstNote.getId(), otherText);
 
@@ -133,9 +125,7 @@ public class RedisCreatorNoteRepositoryShould {
     delete_the_creator_note_by_id() {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
-
-        creatorNoteRepository.add(firstNote.getCreatorId(), firstNote.getText());
-        creatorNoteRepository.add(secondNote.getCreatorId(), secondNote.getText());
+        addCreatorNotes(firstNote, secondNote);
 
         creatorNoteRepository.deleteById(firstNote.getId());
 
@@ -148,5 +138,13 @@ public class RedisCreatorNoteRepositoryShould {
             .create(creatorNoteRepository.findById(secondNote.getId()))
             .expectNext(secondNote)
             .verifyComplete();
+    }
+
+    private void addCreatorNotes(CreatorNote...creatorNotes) {
+        Arrays
+            .stream(creatorNotes)
+            .forEach(creatorNote ->
+                creatorNoteRepository.add(creatorNote.getCreatorId(), creatorNote.getText()).block()
+            );
     }
 }

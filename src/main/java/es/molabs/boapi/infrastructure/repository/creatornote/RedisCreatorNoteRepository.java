@@ -37,11 +37,15 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     }
 
     @Override
-    public void add(int creatorId, String text) {
-        int id = generateNoteId();
-
-        redisClient.set(keyByCreator(creatorId), key(id));
-        redisClient.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text)));
+    public Mono<CreatorNote> add(int creatorId, String text) {
+        return
+            Mono
+                .fromCallable(() -> generateNoteId())
+                .doOnNext(id -> {
+                    redisClient.set(keyByCreator(creatorId), key(id));
+                    redisClient.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text)));
+                })
+                .flatMap(id -> findById(id));
     }
 
     @Override
