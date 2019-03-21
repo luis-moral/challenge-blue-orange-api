@@ -234,9 +234,9 @@ public class MarvelApiClientShould {
                     .willReturn(
                         WireMock
                             .aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                            .withBody(readFile("/creator/get_two_creators.json"))
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                                .withBody(readFile("/creator/get_two_creators.json"))
                     )
             );
     }
@@ -252,9 +252,9 @@ public class MarvelApiClientShould {
                     .willReturn(
                         WireMock
                             .aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                            .withBody(readFile("/creator/get_single_creator_by_id.json"))
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                                .withBody(readFile("/creator/get_single_creator_by_id.json"))
                     )
             );
     }

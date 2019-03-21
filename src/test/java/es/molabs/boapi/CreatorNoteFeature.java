@@ -155,12 +155,12 @@ public class CreatorNoteFeature {
                     .willReturn(
                         WireMock
                             .aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                            .withBody(
-                                readFile("/creator/get_single_creator_by_id.json")
-                                    .replace("\"id\": 1,", "\"id\": " + creatorId + ",")
-                            )
+                                .withStatus(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                                .withBody(
+                                    readFile("/creator/get_single_creator_by_id.json")
+                                        .replace("\"id\": 1,", "\"id\": " + creatorId + ",")
+                                )
                     )
             );
     }

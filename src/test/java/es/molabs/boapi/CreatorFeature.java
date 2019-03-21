@@ -176,9 +176,9 @@ public class CreatorFeature {
 					.willReturn(
 						WireMock
 							.aResponse()
-							.withStatus(200)
-							.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-							.withBody(readFile("/creator/get_single_creator_by_id.json"))
+								.withStatus(200)
+								.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+								.withBody(readFile("/creator/get_single_creator_by_id.json"))
 					)
 			);
 	}
@@ -192,9 +192,9 @@ public class CreatorFeature {
 					.willReturn(
 						WireMock
 							.aResponse()
-							.withStatus(200)
-							.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-							.withBody(readFile("/creator/get_two_creators.json"))
+								.withStatus(200)
+								.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+								.withBody(readFile("/creator/get_two_creators.json"))
 					)
 			);
 	}
