@@ -103,7 +103,9 @@ public class CreatorFeature {
 				"Some custom note"
 			);
 
-		creatorNoteRepository.add(creatorWithCustomNote.getId(), creatorWithCustomNote.getNote());
+		creatorNoteRepository
+			.add(creatorWithCustomNote.getId(), creatorWithCustomNote.getNote())
+			.block();
 
 		assertCreators(NO_FILTERS, NO_SORTING, NONE, creatorWithCustomNote);
 	}
