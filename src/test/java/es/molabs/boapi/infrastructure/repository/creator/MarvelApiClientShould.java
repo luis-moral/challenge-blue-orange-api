@@ -167,7 +167,7 @@ public class MarvelApiClientShould {
     }
 
     private FindCreatorQuery buildQuery() {
-        return buildQuery(null);
+        return buildQuery(new SortQuery.SortQueryField[] {});
     }
 
     private FindCreatorQuery buildQuery(SortQuery.SortQueryField...fields) {
@@ -186,7 +186,7 @@ public class MarvelApiClientShould {
                 comics,
                 series,
                 notes,
-                fields != null ? new SortQuery(Arrays.asList(fields)) : null
+                fields != null && fields.length > 0 ? new SortQuery(Arrays.asList(fields)) : null
             );
     }
 
