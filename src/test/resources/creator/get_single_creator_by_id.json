@@ -1,0 +1,323 @@
+{
+  "code": 200,
+  "status": "Ok",
+  "copyright": "© 2019 MARVEL",
+  "attributionText": "Data provided by Marvel. © 2019 MARVEL",
+  "attributionHTML": "<a href=\"http://marvel.com\">Data provided by Marvel. © 2019 MARVEL</a>",
+  "etag": "b9de267b866e55c124a19662408580dd2b0e1134",
+  "data": {
+    "offset": 0,
+    "limit": 20,
+    "total": 1,
+    "count": 1,
+    "results": [
+      {
+        "id": 1,
+        "firstName": "Tim",
+        "middleName": "",
+        "lastName": "Bradstreet",
+        "suffix": "",
+        "fullName": "Tim Bradstreet",
+        "modified": "2010-12-09T11:41:29-0500",
+        "thumbnail": {
+          "path": "http://i.annihil.us/u/prod/marvel/i/mg/e/f0/4bc6ad5b4bd54",
+          "extension": "jpg"
+        },
+        "resourceURI": "http://gateway.marvel.com/v1/public/creators/1",
+        "comics": {
+          "available": 100,
+          "collectionURI": "http://gateway.marvel.com/v1/public/creators/1/comics",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29827",
+              "name": "Bullseye: Perfect Game (2010) #1"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29828",
+              "name": "Bullseye: Perfect Game (2010) #2"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/8512",
+              "name": "Deadpool (1997) #55"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29072",
+              "name": "Iron Man: The Rapture (2010) #2"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29071",
+              "name": "Iron Man: The Rapture (2010) #1"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29073",
+              "name": "Iron Man: The Rapture (2010) #3"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/29074",
+              "name": "Iron Man: The Rapture (2010) #4"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/70418",
+              "name": "Marvel Knights Punisher by Garth Ennis: The Complete Collection Vol. 1 (Trade Paperback)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/116",
+              "name": "Punisher Max (2004) #1"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/117",
+              "name": "Punisher Max (2004) #2"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/115",
+              "name": "Punisher Max (2004) #3"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/15005",
+              "name": "Punisher Max (2004) #4"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/499",
+              "name": "Punisher Max (2004) #5"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/667",
+              "name": "Punisher Max (2004) #6"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/701",
+              "name": "Punisher Max (2004) #7"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/740",
+              "name": "Punisher Max (2004) #8"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/550",
+              "name": "Punisher Max (2004) #9"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/519",
+              "name": "Punisher Max (2004) #10"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/810",
+              "name": "Punisher Max (2004) #11"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/887",
+              "name": "Punisher Max (2004) #12"
+            }
+          ],
+          "returned": 20
+        },
+        "series": {
+          "available": 37,
+          "collectionURI": "http://gateway.marvel.com/v1/public/creators/1/series",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/13587",
+              "name": "Bullseye: Perfect Game (2010)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/2005",
+              "name": "Deadpool (1997 - 2002)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/9348",
+              "name": "Iron Man: The Rapture (2010 - 2011)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/25737",
+              "name": "Marvel Knights Punisher by Garth Ennis: The Complete Collection Vol. 1 (2018)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/698",
+              "name": "Punisher Max (2004 - 2008)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1554",
+              "name": "Punisher Max Vol. 1 (2005)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1210",
+              "name": "Punisher Max Vol. 1: In the Beginning (2004)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1665",
+              "name": "Punisher Max Vol. 2 (2006)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1306",
+              "name": "Punisher Max Vol. 2: Kitchen Irish (2005)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/2222",
+              "name": "Punisher Max Vol. 3 (2007)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1361",
+              "name": "Punisher Max Vol. 3: Mother Russia (2005)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/3878",
+              "name": "Punisher Max Vol. 4 (2008)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1463",
+              "name": "Punisher Max Vol. 4: Up Is Down and Black Is White (2005)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1602",
+              "name": "Punisher Max Vol. 5: The Slavers (2006)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1666",
+              "name": "Punisher Max Vol. 6: Barracuda (2006)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1957",
+              "name": "Punisher Max Vol. 7: Man of Stone (2007)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/2940",
+              "name": "Punisher Max Vol. 8: Widowmaker (2007)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/4044",
+              "name": "Punisher Max Vol. 9: Long Cold Dark (2008)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1786",
+              "name": "Punisher Max: From First to Last (2006)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/8199",
+              "name": "Punisher Max: Get Castle (2010)"
+            }
+          ],
+          "returned": 20
+        },
+        "stories": {
+          "available": 200,
+          "collectionURI": "http://gateway.marvel.com/v1/public/creators/1/stories",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/226",
+              "name": "After he watched his family murdered by the Mafia, ex-Marine Frank Castle vowed to use his skills to eliminate all criminals fro",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/370",
+              "name": "Writer Garth Ennis – whose classic but contemporary take on the Punisher serves as one of the strongest influences for the upcom",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/382",
+              "name": "Cover #382",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/1410",
+              "name": "Cover #1410",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/1840",
+              "name": "Cover #1840",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2251",
+              "name": "Cover #2251",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2544",
+              "name": "1 of 6 - Mother Russia",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2546",
+              "name": "2 of 6 - Mother Russia",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2553",
+              "name": "Cover #2553",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2555",
+              "name": "Cover #2555",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2557",
+              "name": "Cover #2557",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2559",
+              "name": "Cover #2559",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2561",
+              "name": "Cover #2561",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2563",
+              "name": "Cover #2563",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2565",
+              "name": "Cover #2565",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2567",
+              "name": "\"KITCHEN IRISH\" PART 6 (OF 6) Everyone gets just what they deserve. The bloodcurdling, bloodthirsty, bloody ending to Kitchen Ir",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2569",
+              "name": "3 of 6 - Mother Russia",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2571",
+              "name": "4 of 6 - Mother Russia",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2573",
+              "name": "5 of 6 - Mother Russia",
+              "type": "cover"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/2575",
+              "name": "6 of 6 - Mother Russia",
+              "type": "cover"
+            }
+          ],
+          "returned": 20
+        },
+        "events": {
+          "available": 0,
+          "collectionURI": "http://gateway.marvel.com/v1/public/creators/1/events",
+          "items": [],
+          "returned": 0
+        },
+        "urls": [
+          {
+            "type": "detail",
+            "url": "http://marvel.com/comics/creators/1/tim_bradstreet?utm_campaign=apiRef&utm_source=15d1fa377149b7d692b1b849570d4ff3"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -44,6 +44,20 @@ public class MarvelApiClient {
                     .flatMapMany(this::toDTO);
     }
 
+    public Mono<MarvelCreatorDTO> get(int id) {
+        return
+            webClient
+                .get()
+                    .uri(builder ->
+                        builder
+                            .path("/v1/public/creators/{id}")
+                            .queryParam(PARAMETER_API_KEY, apiKey)
+                            .build(id)
+                    )
+                .exchange()
+                    .flatMap(response -> toDTO(response).next());
+    }
+
     private URI buildUri(UriBuilder builder, String path, FindCreatorQuery query) {
         MultiValueMap<String, String> queryParams = queryMapper.toMap(query);
         queryParams.set(PARAMETER_API_KEY, apiKey);
@@ -67,9 +81,5 @@ public class MarvelApiClient {
                     }
                 })
                 .flatMapIterable(response -> response.getMarvelCreators());
-    }
-
-    public Mono<MarvelCreatorDTO> get(int id) {
-        throw new UnsupportedOperationException();
     }
 }

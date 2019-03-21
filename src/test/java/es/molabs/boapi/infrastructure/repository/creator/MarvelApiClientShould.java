@@ -31,8 +31,10 @@ public class MarvelApiClientShould {
 
     private static final int MARVEL_API_PORT;
     private static final String MARVEL_API_KEY = "123456789asdfghjkl";
-    private static final MarvelCreatorDTO NONE = new MarvelCreatorDTO(7968, "", "-0001-11-30T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(0), new MarvelCreatorDTO.ItemsDTO(0));
-    private static final MarvelCreatorDTO ARK = new MarvelCreatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(1), new MarvelCreatorDTO.ItemsDTO(1));
+
+    private static final MarvelCreatorDTO NONE = creatorDTO(7968, "", "-0001-11-30T00:00:00-0500", 0, 0);
+    private static final MarvelCreatorDTO ARK = creatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", 1, 1);
+    private static final MarvelCreatorDTO TIM_BRADSTREET = creatorDTO(1, "Tim Bradstreet" , "2010-12-09T11:41:29-0500", 100, 37);
 
     static {
         MARVEL_API_PORT = 20000 + new Random().nextInt(25000);
@@ -65,28 +67,28 @@ public class MarvelApiClientShould {
     get_the_creators_without_filters_or_sorting() throws IOException {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        stubMarvelApi(query);
+        stubMarvelFilterCreatorsApi(query);
 
         StepVerifier
             .create(marvelApiClient.get(query))
             .expectNext(NONE, ARK)
             .verifyComplete();
 
-        verifyMarvelApi();
+        verifyMarvelFilterCreatorsApi();
     }
 
     @Test public void
     get_the_creators_with_filters_and_without_sorting() throws IOException {
         FindCreatorQuery query = buildQuery();
 
-        stubMarvelApi(query);
+        stubMarvelFilterCreatorsApi(query);
 
         StepVerifier
                 .create(marvelApiClient.get(query))
                 .expectNext(NONE, ARK)
                 .verifyComplete();
 
-        verifyMarvelApi();
+        verifyMarvelFilterCreatorsApi();
     }
 
     @Test public void
@@ -103,14 +105,14 @@ public class MarvelApiClientShould {
                 )
             );
 
-        stubMarvelApi(query);
+        stubMarvelFilterCreatorsApi(query);
 
         StepVerifier
-                .create(marvelApiClient.get(query))
-                .expectNext(NONE, ARK)
-                .verifyComplete();
+            .create(marvelApiClient.get(query))
+            .expectNext(NONE, ARK)
+            .verifyComplete();
 
-        verifyMarvelApi();
+        verifyMarvelFilterCreatorsApi();
     }
 
     @Test public void
@@ -122,14 +124,28 @@ public class MarvelApiClientShould {
                 new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_NOTES, SortQuery.SortType.Ascending)
             );
 
-        stubMarvelApi(query);
+        stubMarvelFilterCreatorsApi(query);
 
         StepVerifier
-                .create(marvelApiClient.get(query))
-                .expectNext(NONE, ARK)
-                .verifyComplete();
+            .create(marvelApiClient.get(query))
+            .expectNext(NONE, ARK)
+            .verifyComplete();
 
-        verifyMarvelApi();
+        verifyMarvelFilterCreatorsApi();
+    }
+
+    @Test public void
+    get_a_creator_by_id() throws IOException {
+        int id = 1;
+
+        stubMarvelGetCreatorApi(id);
+
+        StepVerifier
+            .create(marvelApiClient.get(id))
+            .expectNext(TIM_BRADSTREET)
+            .verifyComplete();
+
+        verifyMarvelGetCreatorApi(id);
     }
 
     private FindCreatorQuery buildQuery() {
@@ -187,7 +203,7 @@ public class MarvelApiClientShould {
         }
     }
 
-    private void stubMarvelApi(FindCreatorQuery query) throws IOException {
+    private void stubMarvelFilterCreatorsApi(FindCreatorQuery query) throws IOException {
         Map<String, StringValuePattern> queryParams = buildQueryMap(query);
 
         marvelApiMock
@@ -205,7 +221,23 @@ public class MarvelApiClientShould {
             );
     }
 
-    private void verifyMarvelApi() {
+    private void stubMarvelGetCreatorApi(int id) throws IOException {
+        marvelApiMock
+            .stubFor(
+                WireMock
+                    .get(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
+                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
+                    .willReturn(
+                        WireMock
+                            .aResponse()
+                            .withStatus(200)
+                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                            .withBody(readFile("/creator/get_single_creator_by_id.json"))
+                    )
+            );
+    }
+
+    private void verifyMarvelFilterCreatorsApi() {
         marvelApiMock
             .verify(
                 WireMock
@@ -214,7 +246,20 @@ public class MarvelApiClientShould {
             );
     }
 
+    private void verifyMarvelGetCreatorApi(int id) {
+        marvelApiMock
+            .verify(
+                WireMock
+                    .getRequestedFor(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
+                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
+            );
+    }
+
     private String readFile(String resource) throws IOException {
         return IOUtils.toString(getClass().getResourceAsStream(resource), StandardCharsets.UTF_8);
+    }
+
+    private static MarvelCreatorDTO creatorDTO(int id, String fullName, String modified, int comics, int series) {
+        return new MarvelCreatorDTO(id, fullName, modified, new MarvelCreatorDTO.ItemsDTO(comics), new MarvelCreatorDTO.ItemsDTO(series));
     }
 }
