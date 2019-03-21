@@ -88,7 +88,7 @@ public class RedisCreatorNoteRepositoryShould {
     add_creator_note_and_index_by_creator_id() {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
-        
+
         addCreatorNotes(firstNote, secondNote);
 
         StepVerifier
