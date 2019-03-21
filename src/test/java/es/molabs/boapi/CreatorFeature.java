@@ -2,6 +2,7 @@ package es.molabs.boapi;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorDTO;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import redis.embedded.RedisServer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -50,11 +52,16 @@ public class CreatorFeature {
 	private String marvelBaseUrl;
 	@Value("${marvel.api.key}")
 	private String marvelApiKey;
+	@Value("${redis.port}")
+	private int redisPort;
 
 	@Autowired
 	private WebTestClient webTestClient;
+	@Autowired
+	private CreatorNoteRepository creatorNoteRepository;
 
 	private WireMockServer marvelApiMock;
+	private RedisServer redisServer;
 	
 	@Before
 	public void setUp() throws URISyntaxException {
@@ -66,6 +73,9 @@ public class CreatorFeature {
 
 		marvelApiMock = new WireMockServer(port);
 		marvelApiMock.start();
+
+		redisServer = new RedisServer(redisPort);
+		redisServer.start();
 	}
 
 	@After
@@ -73,13 +83,29 @@ public class CreatorFeature {
 		if (marvelApiMock.isRunning()) {
 			marvelApiMock.stop();
 		}
+
+		if (redisServer.isActive()) {
+			redisServer.stop();
+		}
 	}
 
 	@Test public void
 	clients_can_get_a_list_of_creators() throws IOException {
 		stubMarvelApi();
 
-		assertCreators(NO_FILTERS, NO_SORTING, NONE, ARK);
+		CreatorDTO creatorWithCustomNote =
+			new CreatorDTO(
+				ARK.getId(),
+				ARK.getFullName(),
+				ARK.getModified(),
+				ARK.getComics(),
+				ARK.getSeries(),
+				"Some custom note"
+			);
+
+		creatorNoteRepository.add(creatorWithCustomNote.getId(), creatorWithCustomNote.getNote());
+
+		assertCreators(NO_FILTERS, NO_SORTING, NONE, creatorWithCustomNote);
 	}
 
 	@Test public void

@@ -2,6 +2,8 @@ package es.molabs.boapi.domain.creator;
 
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 
+import java.util.Objects;
+
 public class Creator {
 
     private int id;
@@ -70,5 +72,23 @@ public class Creator {
 
     public void setNote(CreatorNote note) {
         this.note = note;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Creator creator = (Creator) o;
+        return id == creator.id &&
+            comics == creator.comics &&
+            series == creator.series &&
+            Objects.equals(fullName, creator.fullName) &&
+            Objects.equals(modified, creator.modified) &&
+            Objects.equals(note, creator.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, modified, comics, series, note);
     }
 }

@@ -35,15 +35,15 @@ public class CreatorServiceShould {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
         Creator firstCreator = creator(1);
+        Creator firstCreatorWithNote = creator(1);
         Creator secondCreator = creator(2);
-        Flux<Creator> repositoryCreators = Flux.just(firstCreator, secondCreator);
 
         CreatorNote firstNote = new CreatorNote(10, firstCreator.getId(), "First");
-        CreatorNote secondNote = new CreatorNote(20, secondCreator.getId(), "Second");
+        firstCreatorWithNote.setNote(firstNote);
 
         Mockito
             .when(creatorRepository.find(query))
-            .thenReturn(repositoryCreators);
+            .thenReturn(Flux.just(firstCreator, secondCreator));
 
         Mockito
             .when(creatorNoteRepository.findByCreatorId(firstCreator.getId()))
@@ -51,11 +51,11 @@ public class CreatorServiceShould {
 
         Mockito
             .when(creatorNoteRepository.findByCreatorId(secondCreator.getId()))
-            .thenReturn(Mono.just(secondNote));
+            .thenReturn(Mono.empty());
 
         StepVerifier
             .create(creatorService.findCreators(query))
-            .expectNext(firstCreator, secondCreator)
+            .expectNext(firstCreatorWithNote, secondCreator)
             .verifyComplete();
 
         Mockito

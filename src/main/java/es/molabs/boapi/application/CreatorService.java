@@ -3,10 +3,13 @@ package es.molabs.boapi.application;
 import es.molabs.boapi.domain.creator.Creator;
 import es.molabs.boapi.domain.creator.CreatorRepository;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
+import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
 
 public class CreatorService {
+
+    private static final CreatorNote EMPTY_NOTE = new CreatorNote(-99, -99, null);
 
     private final CreatorRepository creatorRepository;
     private final CreatorNoteRepository creatorNoteRepository;
@@ -20,10 +23,20 @@ public class CreatorService {
         return
             creatorRepository
                 .find(query)
-                .doOnNext(creator ->
+                .flatMap(creator ->
                     creatorNoteRepository
                         .findByCreatorId(creator.getId())
-                        .doOnNext(note -> creator.setNote(note))
+                        .defaultIfEmpty(EMPTY_NOTE)
+                        .map(note -> setNote(creator, note))
                 );
+
+    }
+
+    private Creator setNote(Creator creator, CreatorNote note) {
+        if (note != EMPTY_NOTE) {
+            creator.setNote(note);
+        }
+
+        return creator;
     }
 }
