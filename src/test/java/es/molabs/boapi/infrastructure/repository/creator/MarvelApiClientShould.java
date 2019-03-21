@@ -33,7 +33,6 @@ public class MarvelApiClientShould {
     private static final int MARVEL_API_PORT;
     private static final String MARVEL_PUBLIC_API_KEY = "123456789asdfghjkl";
     private static final String MARVEL_PRIVATE_API_KEY = "qwertyuiop12345";
-    private static final String MARVEL_HASH = DigestUtils.md5DigestAsHex(MARVEL_PRIVATE_API_KEY.getBytes());
 
     private static final MarvelCreatorDTO NONE = creatorDTO(7968, "", "-0001-11-30T00:00:00-0500", 0, 0);
     private static final MarvelCreatorDTO ARK = creatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", 1, 1);
@@ -43,12 +42,14 @@ public class MarvelApiClientShould {
         MARVEL_API_PORT = 20000 + new Random().nextInt(25000);
     }
 
-    private String hash;
+    private StaticTimestampGenerator staticTimestampGenerator;
     private WireMockServer marvelApiMock;
     private MarvelApiClient marvelApiClient;
 
     @Before
     public void setUp() {
+        staticTimestampGenerator = new StaticTimestampGenerator();
+
         marvelApiMock = new WireMockServer(MARVEL_API_PORT);
         marvelApiMock.start();
 
@@ -59,7 +60,8 @@ public class MarvelApiClientShould {
                 MARVEL_PRIVATE_API_KEY,
                 WebClient.create(),
                 new FindCreatorQueryMapper(),
-                new ObjectMapper()
+                new ObjectMapper(),
+                staticTimestampGenerator
             );
     }
 
@@ -73,29 +75,31 @@ public class MarvelApiClientShould {
     @Test public void
     get_the_creators_without_filters_or_sorting() throws IOException {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
+        String timestamp = getTimestamp();
 
-        stubMarvelFilterCreatorsApi(query);
+        stubMarvelFilterCreatorsApi(query, timestamp);
 
         StepVerifier
             .create(marvelApiClient.get(query))
             .expectNext(NONE, ARK)
             .verifyComplete();
 
-        verifyMarvelFilterCreatorsApi();
+        verifyMarvelFilterCreatorsApi(timestamp);
     }
 
     @Test public void
     get_the_creators_with_filters_and_without_sorting() throws IOException {
         FindCreatorQuery query = buildQuery();
+        String timestamp = getTimestamp();
 
-        stubMarvelFilterCreatorsApi(query);
+        stubMarvelFilterCreatorsApi(query, timestamp);
 
         StepVerifier
                 .create(marvelApiClient.get(query))
                 .expectNext(NONE, ARK)
                 .verifyComplete();
 
-        verifyMarvelFilterCreatorsApi();
+        verifyMarvelFilterCreatorsApi(timestamp);
     }
 
     @Test public void
@@ -111,15 +115,16 @@ public class MarvelApiClientShould {
                         )
                 )
             );
+        String timestamp = getTimestamp();
 
-        stubMarvelFilterCreatorsApi(query);
+        stubMarvelFilterCreatorsApi(query, timestamp);
 
         StepVerifier
             .create(marvelApiClient.get(query))
             .expectNext(NONE, ARK)
             .verifyComplete();
 
-        verifyMarvelFilterCreatorsApi();
+        verifyMarvelFilterCreatorsApi(timestamp);
     }
 
     @Test public void
@@ -130,29 +135,35 @@ public class MarvelApiClientShould {
                 new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_SERIES, SortQuery.SortType.Descending),
                 new SortQuery.SortQueryField(FindCreatorQueryMapper.FIELD_NOTES, SortQuery.SortType.Ascending)
             );
+        String timestamp = getTimestamp();
 
-        stubMarvelFilterCreatorsApi(query);
+        stubMarvelFilterCreatorsApi(query, timestamp);
 
         StepVerifier
             .create(marvelApiClient.get(query))
             .expectNext(NONE, ARK)
             .verifyComplete();
 
-        verifyMarvelFilterCreatorsApi();
+        verifyMarvelFilterCreatorsApi(timestamp);
     }
 
     @Test public void
     get_a_creator_by_id() throws IOException {
         int id = 1;
+        String timestamp = getTimestamp();
 
-        stubMarvelGetCreatorApi(id);
+        stubMarvelGetCreatorApi(id, timestamp);
 
         StepVerifier
             .create(marvelApiClient.get(id))
             .expectNext(TIM_BRADSTREET)
             .verifyComplete();
 
-        verifyMarvelGetCreatorApi(id);
+        verifyMarvelGetCreatorApi(id, timestamp);
+    }
+
+    private String getTimestamp() {
+        return Long.toString(staticTimestampGenerator.currentId());
     }
 
     private FindCreatorQuery buildQuery() {
@@ -179,7 +190,7 @@ public class MarvelApiClientShould {
             );
     }
 
-    private Map<String, StringValuePattern> buildQueryMap(FindCreatorQuery query) {
+    private Map<String, StringValuePattern> buildQueryMap(FindCreatorQuery query, String timestamp) {
         Map<String, StringValuePattern> map = new HashMap<>();
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_ID, query.getId());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_FULL_NAME, query.getFullName());
@@ -188,7 +199,8 @@ public class MarvelApiClientShould {
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_SERIES, query.getSeries());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_NOTES, query.getNotes());
         map.put("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY));
-        map.put("hash", WireMock.equalTo(MARVEL_HASH));
+        map.put("hash", WireMock.equalTo(getHash(timestamp)));
+        map.put("ts", WireMock.equalTo(timestamp));
 
         if (query.getSortQuery() != null) {
             String sorting =
@@ -211,8 +223,8 @@ public class MarvelApiClientShould {
         }
     }
 
-    private void stubMarvelFilterCreatorsApi(FindCreatorQuery query) throws IOException {
-        Map<String, StringValuePattern> queryParams = buildQueryMap(query);
+    private void stubMarvelFilterCreatorsApi(FindCreatorQuery query, String timestamp) throws IOException {
+        Map<String, StringValuePattern> queryParams = buildQueryMap(query, timestamp);
 
         marvelApiMock
             .stubFor(
@@ -229,12 +241,14 @@ public class MarvelApiClientShould {
             );
     }
 
-    private void stubMarvelGetCreatorApi(int id) throws IOException {
+    private void stubMarvelGetCreatorApi(int id, String timestamp) throws IOException {
         marvelApiMock
             .stubFor(
                 WireMock
                     .get(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
                     .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
+                    .withQueryParam("hash", WireMock.equalTo(getHash(timestamp)))
+                    .withQueryParam("ts", WireMock.equalTo(timestamp))
                     .willReturn(
                         WireMock
                             .aResponse()
@@ -245,33 +259,37 @@ public class MarvelApiClientShould {
             );
     }
 
-    private void verifyMarvelFilterCreatorsApi() {
+    private void verifyMarvelFilterCreatorsApi(String timestamp) {
         marvelApiMock
             .verify(
                 WireMock
                     .getRequestedFor(WireMock.urlPathEqualTo("/v1/public/creators"))
                     .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
-                    .withQueryParam("hash", WireMock.equalTo(MARVEL_HASH))
-                    .withQueryParam("ts", WireMock.matching("^(?!\\s*$).+"))
+                    .withQueryParam("hash", WireMock.equalTo(getHash(timestamp)))
+                    .withQueryParam("ts", WireMock.equalTo(timestamp))
             );
     }
 
-    private void verifyMarvelGetCreatorApi(int id) {
+    private void verifyMarvelGetCreatorApi(int id, String timestamp) {
         marvelApiMock
             .verify(
                 WireMock
                     .getRequestedFor(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
                     .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
-                    .withQueryParam("hash", WireMock.equalTo(MARVEL_HASH))
-                    .withQueryParam("ts", WireMock.matching("^(?!\\s*$).+"))
+                    .withQueryParam("hash", WireMock.equalTo(getHash(timestamp)))
+                    .withQueryParam("ts", WireMock.equalTo(timestamp))
             );
     }
 
-    private String readFile(String resource) throws IOException {
-        return IOUtils.toString(getClass().getResourceAsStream(resource), StandardCharsets.UTF_8);
+    private String getHash(String timestamp) {
+        return DigestUtils.md5DigestAsHex((timestamp + MARVEL_PRIVATE_API_KEY + MARVEL_PUBLIC_API_KEY).getBytes());
     }
 
     private static MarvelCreatorDTO creatorDTO(int id, String fullName, String modified, int comics, int series) {
         return new MarvelCreatorDTO(id, fullName, modified, new MarvelCreatorDTO.ItemsDTO(comics), new MarvelCreatorDTO.ItemsDTO(series));
+    }
+
+    private String readFile(String resource) throws IOException {
+        return IOUtils.toString(getClass().getResourceAsStream(resource), StandardCharsets.UTF_8);
     }
 }

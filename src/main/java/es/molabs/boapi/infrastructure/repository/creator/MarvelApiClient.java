@@ -14,19 +14,19 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
 
 public class MarvelApiClient {
 
     private static final String PARAMETER_API_KEY = "apikey";
     private static final String PARAMETER_HASH = "hash";
-    private static final String PARAMETER_TS = "ts";
+    private static final String PARAMETER_TIMESTAMP = "ts";
 
-    private final String apiKey;
-    private final String hash;
+    private final String publicApiKey;
+    private final String privateApiKey;
     private final WebClient webClient;
     private final FindCreatorQueryMapper queryMapper;
     private final ObjectMapper objectMapper;
+    private final TimestampGenerator timestampGenerator;
 
     public MarvelApiClient(
         String baseUrl,
@@ -34,13 +34,15 @@ public class MarvelApiClient {
         String privateApiKey,
         WebClient webClient,
         FindCreatorQueryMapper queryMapper,
-        ObjectMapper objectMapper
+        ObjectMapper objectMapper,
+        TimestampGenerator timestampGenerator
     ) {
-        this.apiKey = publicApiKey;
-        this.hash = DigestUtils.md5DigestAsHex(privateApiKey.getBytes());
+        this.publicApiKey = publicApiKey;
+        this.privateApiKey = privateApiKey;
         this.webClient = webClient.mutate().baseUrl(baseUrl).build();
         this.queryMapper = queryMapper;
         this.objectMapper = objectMapper;
+        this.timestampGenerator = timestampGenerator;
     }
 
     public Flux<MarvelCreatorDTO> get(FindCreatorQuery query) {
@@ -78,11 +80,17 @@ public class MarvelApiClient {
     }
 
     private MultiValueMap<String, String> addRequiredParams(MultiValueMap<String, String> queryParams) {
-        queryParams.set(PARAMETER_API_KEY, apiKey);
-        queryParams.set(PARAMETER_HASH, hash);
-        queryParams.set(PARAMETER_TS, UUID.randomUUID().toString());
+        String timestamp =  Long.toString(timestampGenerator.nextId());
+
+        queryParams.set(PARAMETER_API_KEY, publicApiKey);
+        queryParams.set(PARAMETER_HASH, getHash(timestamp));
+        queryParams.set(PARAMETER_TIMESTAMP ,timestamp);
 
         return queryParams;
+    }
+
+    private String getHash(String timestamp) {
+        return DigestUtils.md5DigestAsHex((timestamp + privateApiKey + publicApiKey).getBytes());
     }
 
     private Flux<MarvelCreatorDTO> toDTO(ClientResponse response) {

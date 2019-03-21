@@ -3,6 +3,7 @@ package es.molabs.boapi.infrastructure.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
 import es.molabs.boapi.infrastructure.repository.creator.MarvelApiClient;
+import es.molabs.boapi.infrastructure.repository.creator.StaticTimestampGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,16 @@ public class ClientConfiguration {
         FindCreatorQueryMapper queryMapper,
         ObjectMapper objectMapper
     ) {
-        return new MarvelApiClient(marvelBaseUrl, marvelPublicApiKey, marvelPrivateApiKey, webClient, queryMapper, objectMapper);
+        return
+            new MarvelApiClient(
+                marvelBaseUrl,
+                marvelPublicApiKey,
+                marvelPrivateApiKey,
+                webClient,
+                queryMapper,
+                objectMapper,
+                new StaticTimestampGenerator()
+            );
     }
 
     @Bean
