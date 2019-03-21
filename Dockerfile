@@ -7,4 +7,4 @@ EXPOSE 8080/tcp
 ADD $JAR_FILE app.jar
 
 HEALTHCHECK --interval=1m --timeout=3s CMD curl -f http://localhost:8080/status || exit 1
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar /app.jar --marvel.api.public-key $MARVEL_PUBLIC_KEY --marvel.api.private-key $MARVEL_PRIVATE_KEY
+ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar /app.jar --marvel.api.public-key=$MARVEL_PUBLIC_KEY --marvel.api.private-key=$MARVEL_PRIVATE_KEY
