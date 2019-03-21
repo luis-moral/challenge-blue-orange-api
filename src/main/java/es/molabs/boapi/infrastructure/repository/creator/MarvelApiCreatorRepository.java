@@ -4,6 +4,7 @@ import es.molabs.boapi.domain.creator.Creator;
 import es.molabs.boapi.domain.creator.CreatorRepository;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class MarvelApiCreatorRepository implements CreatorRepository {
 
@@ -20,6 +21,14 @@ public class MarvelApiCreatorRepository implements CreatorRepository {
         return
             apiClient
                 .get(query)
+                .map(mapper::toCreator);
+    }
+
+    @Override
+    public Mono<Creator> findById(int id) {
+        return
+            apiClient
+                .get(id)
                 .map(mapper::toCreator);
     }
 }

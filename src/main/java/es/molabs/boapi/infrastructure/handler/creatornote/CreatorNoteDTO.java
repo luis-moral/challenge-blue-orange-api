@@ -14,16 +14,20 @@ public class CreatorNoteDTO {
     private final int id;
     private final int creatorId;
     private final String text;
+    private final String creatorFullName;
 
     @JsonCreator
     public CreatorNoteDTO(
         @JsonProperty("id") int id,
         @JsonProperty("creatorId") int creatorId,
-        @JsonProperty("text") String text)
+        @JsonProperty("text") String text,
+        @JsonProperty(required = false, value = "creatorFullName") String creatorFullName
+    )
     {
         this.id = id;
         this.creatorId = creatorId;
         this.text = text;
+        this.creatorFullName = creatorFullName;
     }
 
     public int getId() {
@@ -36,6 +40,10 @@ public class CreatorNoteDTO {
 
     public String getText() {
         return text;
+    }
+
+    public String getCreatorFullName() {
+        return creatorFullName;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,19 +28,18 @@ public class MarvelApiCreatorRepositoryShould {
     }
 
     @Test public void
-    retrieve_the_creators() {
+    retrieve_creators_by_query() {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
-        MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(1, "Name First", "-0001-11-30T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(6), new MarvelCreatorDTO.ItemsDTO(6));
-        MarvelCreatorDTO secondCreatorDTO = new MarvelCreatorDTO(2, "Name Second", "-0001-11-30T10:30:00-0500", new MarvelCreatorDTO.ItemsDTO(3), new MarvelCreatorDTO.ItemsDTO(2));
-        Flux<MarvelCreatorDTO> apiClientCreators = Flux.just(firstCreatorDTO, secondCreatorDTO);
+        MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(101, "Name First", "-0001-11-30T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(6), new MarvelCreatorDTO.ItemsDTO(6));
+        MarvelCreatorDTO secondCreatorDTO = new MarvelCreatorDTO(102, "Name Second", "-0001-11-30T10:30:00-0500", new MarvelCreatorDTO.ItemsDTO(3), new MarvelCreatorDTO.ItemsDTO(2));
 
         Creator firstCreator = Mockito.mock(Creator.class);
         Creator secondCreator = Mockito.mock(Creator.class);
 
         Mockito
             .when(apiClient.get(Mockito.any()))
-            .thenReturn(apiClientCreators);
+            .thenReturn(Flux.just(firstCreatorDTO, secondCreatorDTO));
 
         Mockito
             .when(mapper.toCreator(firstCreatorDTO))
@@ -65,5 +65,33 @@ public class MarvelApiCreatorRepositoryShould {
         Mockito
             .verify(mapper, Mockito.times(1))
             .toCreator(secondCreatorDTO);
+    }
+
+    @Test public void
+    retrieve_a_creator_by_id() {
+        int id = 101;
+        MarvelCreatorDTO firstCreatorDTO = new MarvelCreatorDTO(id, "Name First", "-0001-11-30T00:00:00-0500", new MarvelCreatorDTO.ItemsDTO(6), new MarvelCreatorDTO.ItemsDTO(6));
+        Creator firstCreator = Mockito.mock(Creator.class);
+
+        Mockito
+            .when(apiClient.get(id))
+            .thenReturn(Mono.just(firstCreatorDTO));
+
+        Mockito
+            .when(mapper.toCreator(firstCreatorDTO))
+            .thenReturn(firstCreator);
+
+        StepVerifier
+            .create(creatorRepository.findById(id))
+            .expectNext(firstCreator)
+            .verifyComplete();
+
+        Mockito
+            .verify(apiClient, Mockito.times(1))
+            .get(id);
+
+        Mockito
+            .verify(mapper, Mockito.times(1))
+            .toCreator(firstCreatorDTO);
     }
 }

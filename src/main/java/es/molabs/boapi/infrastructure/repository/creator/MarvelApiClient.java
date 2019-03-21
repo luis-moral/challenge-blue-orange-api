@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
@@ -66,5 +67,9 @@ public class MarvelApiClient {
                     }
                 })
                 .flatMapIterable(response -> response.getMarvelCreators());
+    }
+
+    public Mono<MarvelCreatorDTO> get(int id) {
+        throw new UnsupportedOperationException();
     }
 }

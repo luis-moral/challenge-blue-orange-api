@@ -107,7 +107,7 @@ public class CreatorNoteFeature {
 
     private void assertCreateNote(int creatorId, String text, int expectedNoteId) throws JsonProcessingException {
         AddCreatorNoteDTO addNoteDto = new AddCreatorNoteDTO(creatorId, text);
-        CreatorNoteDTO noteDto = new CreatorNoteDTO(expectedNoteId, creatorId, text);
+        CreatorNoteDTO noteDto = new CreatorNoteDTO(expectedNoteId, creatorId, text, null);
 
         webTestClient
             .post()
@@ -126,7 +126,7 @@ public class CreatorNoteFeature {
 
     private void assertEditNote(int noteId, int creatorId, String text) throws JsonProcessingException {
         EditCreatorNoteDTO editDTO = new EditCreatorNoteDTO(text);
-        CreatorNoteDTO noteNoteDto = new CreatorNoteDTO(noteId, creatorId, text);
+        CreatorNoteDTO noteNoteDto = new CreatorNoteDTO(noteId, creatorId, text, null);
 
         webTestClient
             .put()
@@ -143,7 +143,7 @@ public class CreatorNoteFeature {
                     );
     }
 
-    private void assertDeleteNote(int noteId) throws JsonProcessingException {
+    private void assertDeleteNote(int noteId) {
         webTestClient
             .delete()
                 .uri(builder -> builder.path(creatorNotePath).build(noteId))
