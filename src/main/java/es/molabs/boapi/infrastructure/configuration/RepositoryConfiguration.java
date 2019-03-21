@@ -9,7 +9,7 @@ import es.molabs.boapi.infrastructure.repository.creator.MarvelCreatorMapper;
 import es.molabs.boapi.infrastructure.repository.creatornote.RedisCreatorNoteRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 @Configuration
 public class RepositoryConfiguration {
@@ -20,7 +20,7 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public CreatorNoteRepository creatorNoteRepository(Jedis redisClient, ObjectMapper objectMapper) {
-        return new RedisCreatorNoteRepository(redisClient, objectMapper);
+    public CreatorNoteRepository creatorNoteRepository(JedisPool redisClientPool, ObjectMapper objectMapper) {
+        return new RedisCreatorNoteRepository(redisClientPool, objectMapper);
     }
 }

@@ -9,7 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import reactor.test.StepVerifier;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.embedded.RedisServer;
 
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class RedisCreatorNoteRepositoryShould {
     }
 
     private RedisServer redisServer;
-    private Jedis redisClient;
+    private JedisPool redisClientPool;
 
     private ObjectMapper objectMapper;
     private RedisCreatorNoteRepository creatorNoteRepository;
@@ -35,10 +36,10 @@ public class RedisCreatorNoteRepositoryShould {
         redisServer = new RedisServer(REDIS_PORT);
         redisServer.start();
 
-        redisClient = new Jedis("localhost", REDIS_PORT);
+        redisClientPool = new JedisPool(new JedisPoolConfig(), "localhost", REDIS_PORT);
 
         objectMapper = new ObjectMapper();
-        creatorNoteRepository = new RedisCreatorNoteRepository(redisClient, objectMapper);
+        creatorNoteRepository = new RedisCreatorNoteRepository(redisClientPool, objectMapper);
     }
 
     @After

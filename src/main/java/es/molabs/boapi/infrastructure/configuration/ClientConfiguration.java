@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
 public class ClientConfiguration {
@@ -37,7 +38,11 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public Jedis redisClient() {
-        return new Jedis(redisHost, redisPort);
+    public JedisPool redisPool() {
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setTestOnBorrow(true);
+        jedisPoolConfig.setTestOnReturn(true);
+
+        return new JedisPool(jedisPoolConfig, redisHost, redisPort);
     }
 }

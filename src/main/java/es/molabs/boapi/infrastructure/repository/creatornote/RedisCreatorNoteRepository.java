@@ -6,6 +6,7 @@ import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Mono;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,11 +18,11 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     private static final String KEY_CREATOR_NOTE_BY_CREATOR = "creator_note_by_creator_";
 
     private final ObjectMapper objectMapper;
-    private final Jedis redisClient;
+    private final JedisPool redisPool;
 
-    public RedisCreatorNoteRepository(Jedis redisClient, ObjectMapper objectMapper) {
+    public RedisCreatorNoteRepository(JedisPool redisPool, ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.redisClient = redisClient;
+        this.redisPool = redisPool;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     public Mono<CreatorNote> findByCreatorId(int creatorId) {
         return
             Mono
-                .fromCallable(() -> redisClient.get(keyByCreator(creatorId)))
+                .fromCallable(() -> redis(client -> client.get(keyByCreator(creatorId))))
                 .map(this::getCreatorNote);
     }
 
@@ -45,15 +46,15 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
             Mono
                 .fromCallable(() -> generateNoteId())
                 .doOnNext(id -> {
-                    redisClient.set(keyByCreator(creatorId), key(id));
-                    redisClient.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text)));
+                    redis(client -> client.set(keyByCreator(creatorId), key(id)));
+                    redis(client -> client.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text))));
                 })
                 .flatMap(id -> findById(id));
     }
 
     @Override
     public void set(int noteId, String text) {
-        redisClient.hset(key(noteId), "text", text);
+        redis(client -> client.hset(key(noteId), "text", text));
     }
 
     @Override
@@ -61,20 +62,20 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         CreatorNote note = getCreatorNote(key(id));
 
         if (note != null) {
-            redisClient.del(keyByCreator(note.getCreatorId()), key(note.getId()));
+            redis(client -> client.del(keyByCreator(note.getCreatorId()), key(note.getId())));
         }
     }
 
     private int generateNoteId() {
         int id = 1;
-        String lastId = redisClient.get(KEY_CREATOR_NOTE_ID_GENERATOR);
+        String lastId = redis(client -> client.get(KEY_CREATOR_NOTE_ID_GENERATOR));
 
         if (lastId == null || lastId.isEmpty()) {
-            redisClient.set(KEY_CREATOR_NOTE_ID_GENERATOR, Integer.toString(id));
+            redis(client -> client.set(KEY_CREATOR_NOTE_ID_GENERATOR, "1"));
         }
         else {
-            redisClient.incr(KEY_CREATOR_NOTE_ID_GENERATOR);
-            id = Integer.parseInt(redisClient.get(KEY_CREATOR_NOTE_ID_GENERATOR));
+            redis(client -> client.incr(KEY_CREATOR_NOTE_ID_GENERATOR));
+            id = Integer.parseInt(redis(client -> client.get(KEY_CREATOR_NOTE_ID_GENERATOR)));
         }
 
         return id;
@@ -83,7 +84,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     private CreatorNote getCreatorNote(String key) {
         return
             Optional
-                .ofNullable(redisClient.hgetAll(key))
+                .ofNullable(redis(client-> client.hgetAll(key)))
                 .filter(fields -> fields.size() > 0)
                 .map(this::toCreatorNote)
                 .orElse(null);
@@ -104,5 +105,16 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     private String keyByCreator(int creatorId) {
         return KEY_CREATOR_NOTE_BY_CREATOR + creatorId;
+    }
+
+    private<T> T redis(RedisAction<T> action) {
+        try (Jedis client = redisPool.getResource()) {
+            return action.doAction(client);
+        }
+    }
+
+    @FunctionalInterface
+    private interface RedisAction<T> {
+        T doAction(Jedis client);
     }
 }

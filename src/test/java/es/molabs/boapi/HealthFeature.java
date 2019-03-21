@@ -26,7 +26,7 @@ public class HealthFeature {
 
     @Test
     public void
-    should_return_200_if_server_working() {
+    should_return_status_ok_if_server_working() {
         webTestClient
             .get()
                 .uri(healthPath)
