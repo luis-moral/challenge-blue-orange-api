@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +29,6 @@ public class CreatorNoteHandlerShould {
     private WebTestClient webTestClient;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired @Spy
-    private CreatorNoteMapper creatorNoteMapper;
 
     @MockBean
     private CreatorNoteService creatorNoteService;
@@ -66,10 +63,6 @@ public class CreatorNoteHandlerShould {
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
             .addCreatorNote(addNoteDto);
-
-        Mockito
-            .verify(creatorNoteMapper, Mockito.times(1))
-            .toCreatorNoteDTO(creatorNote);
     }
 
     @Test public void
@@ -77,10 +70,13 @@ public class CreatorNoteHandlerShould {
         int id = 1;
         String text = "Some text";
 
-
-
         CreatorNoteDTO creatorNoteDTO = new CreatorNoteDTO(1, 101, text, null);
         EditCreatorNoteDTO editNoteDTO = new EditCreatorNoteDTO(text);
+        CreatorNote creatorNote = new CreatorNote(creatorNoteDTO.getId(), creatorNoteDTO.getCreatorId(), creatorNoteDTO.getText());
+
+        Mockito
+            .when(creatorNoteService.editCreatorNote(id, editNoteDTO))
+            .thenReturn(Mono.just(creatorNote));
 
         webTestClient
             .put()

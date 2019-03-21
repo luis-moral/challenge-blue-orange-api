@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuples;
 
 import java.io.IOException;
 
@@ -17,10 +16,12 @@ import java.io.IOException;
 public class CreatorNoteHandler {
 
     private final CreatorNoteService creatorNoteService;
+    private final CreatorNoteMapper creatorNoteMapper;
     private final ObjectMapper objectMapper;
 
-    public CreatorNoteHandler(CreatorNoteService creatorNoteService, ObjectMapper objectMapper) {
+    public CreatorNoteHandler(CreatorNoteService creatorNoteService, CreatorNoteMapper creatorNoteMapper, ObjectMapper objectMapper) {
         this.creatorNoteService = creatorNoteService;
+        this.creatorNoteMapper = creatorNoteMapper;
         this.objectMapper = objectMapper;
     }
 
@@ -28,18 +29,13 @@ public class CreatorNoteHandler {
         return
             serverRequest
                 .bodyToMono(String.class)
-                .map(body -> {
-                    try {
-                        return objectMapper.readValue(body, AddCreatorNoteDTO.class);
-                    } catch (IOException IOe) {
-                        throw new RuntimeException(IOe);
-                    }
-                })
-                .doOnNext(dto -> creatorNoteService.addCreatorNote(dto))
+                .map(body -> readValue(body, AddCreatorNoteDTO.class))
+                .flatMap(dto -> creatorNoteService.addCreatorNote(dto))
+                .map(creatorNoteMapper::toCreatorNoteDTO)
                 .flatMap(dto ->
                     ServerResponse
                         .status(HttpStatus.CREATED)
-                        .body(Mono.just(dto), AddCreatorNoteDTO.class)
+                        .body(Mono.just(dto), CreatorNoteDTO.class)
                 );
     }
 
@@ -47,19 +43,13 @@ public class CreatorNoteHandler {
         return
             serverRequest
                 .bodyToMono(String.class)
-                .map(body -> {
-                    try {
-                        return objectMapper.readValue(body, EditCreatorNoteDTO.class);
-                    } catch (IOException IOe) {
-                        throw new RuntimeException(IOe);
-                    }
-                })
-                .map(dto -> Tuples.of(Integer.parseInt(serverRequest.pathVariable("id")), dto))
-                .doOnNext(tuple -> creatorNoteService.editCreatorNote(tuple.getT1(), tuple.getT2()))
-                .flatMap(tuple ->
+                .map(body -> readValue(body, EditCreatorNoteDTO.class))
+                .flatMap(dto -> creatorNoteService.editCreatorNote(Integer.parseInt(serverRequest.pathVariable("id")), dto))
+                .map(creatorNoteMapper::toCreatorNoteDTO)
+                .flatMap(dto ->
                     ServerResponse
                         .ok()
-                        .body(Mono.just(tuple.getT2()), EditCreatorNoteDTO.class)
+                        .body(Mono.just(dto), CreatorNoteDTO.class)
                 );
     }
 
@@ -74,5 +64,13 @@ public class CreatorNoteHandler {
                         .ok()
                         .body(Mono.empty(), String.class)
                 );
+    }
+
+    private<T> T readValue(String body, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(body, clazz);
+        } catch (IOException IOe) {
+            throw new RuntimeException(IOe);
+        }
     }
 }
