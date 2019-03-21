@@ -38,14 +38,6 @@ public class RouterConfiguration {
         return
             RouterFunctions
                 .route(
-                    RequestPredicates.GET(creatorsPath),
-                    creatorHandler::getCreatorsByQuery
-                )
-                .andRoute(
-                    RequestPredicates.GET(creatorPath),
-                    creatorHandler::getCreator
-                )
-                .andRoute(
                     RequestPredicates.GET(creatorsNotesPath),
                     creatorNoteHandler::getCreatorNotesByQuery
                 )
@@ -64,6 +56,14 @@ public class RouterConfiguration {
                 .andRoute(
                     RequestPredicates.DELETE(creatorNotePath),
                     creatorNoteHandler::deleteCreatorNote
+                )
+                .andRoute(
+                    RequestPredicates.GET(creatorsPath),
+                    creatorHandler::getCreatorsByQuery
+                )
+                .andRoute(
+                    RequestPredicates.GET(creatorPath),
+                    creatorHandler::getCreator
                 )
                 .andRoute(
                     RequestPredicates.GET(healthPath),

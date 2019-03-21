@@ -3,6 +3,8 @@ package es.molabs.boapi.infrastructure.repository.creator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import es.molabs.boapi.infrastructure.handler.creator.FindCreatorQueryMapper;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,24 +14,30 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.UUID;
 
 public class MarvelApiClient {
 
     private static final String PARAMETER_API_KEY = "apikey";
+    private static final String PARAMETER_HASH = "hash";
+    private static final String PARAMETER_TS = "ts";
 
     private final String apiKey;
+    private final String hash;
     private final WebClient webClient;
     private final FindCreatorQueryMapper queryMapper;
     private final ObjectMapper objectMapper;
 
     public MarvelApiClient(
         String baseUrl,
-        String apiKey,
+        String publicApiKey,
+        String privateApiKey,
         WebClient webClient,
         FindCreatorQueryMapper queryMapper,
         ObjectMapper objectMapper
     ) {
-        this.apiKey = apiKey;
+        this.apiKey = publicApiKey;
+        this.hash = DigestUtils.md5DigestAsHex(privateApiKey.getBytes());
         this.webClient = webClient.mutate().baseUrl(baseUrl).build();
         this.queryMapper = queryMapper;
         this.objectMapper = objectMapper;
@@ -51,7 +59,7 @@ public class MarvelApiClient {
                     .uri(builder ->
                         builder
                             .path("/v1/public/creators/{id}")
-                            .queryParam(PARAMETER_API_KEY, apiKey)
+                            .queryParams(addRequiredParams(new LinkedMultiValueMap<>()))
                             .build(id)
                     )
                 .exchange()
@@ -59,19 +67,27 @@ public class MarvelApiClient {
     }
 
     private URI buildUri(UriBuilder builder, String path, FindCreatorQuery query) {
-        MultiValueMap<String, String> queryParams = queryMapper.toMap(query);
-        queryParams.set(PARAMETER_API_KEY, apiKey);
-
         return
             builder
                 .path(path)
-                .queryParams(queryParams)
+                .queryParams(
+                    addRequiredParams(
+                        queryMapper.toMap(query))
+                    )
                 .build();
     }
 
-    private Flux<MarvelCreatorDTO> toDTO(ClientResponse clientResponse) {
+    private MultiValueMap<String, String> addRequiredParams(MultiValueMap<String, String> queryParams) {
+        queryParams.set(PARAMETER_API_KEY, apiKey);
+        queryParams.set(PARAMETER_HASH, hash);
+        queryParams.set(PARAMETER_TS, UUID.randomUUID().toString());
+
+        return queryParams;
+    }
+
+    private Flux<MarvelCreatorDTO> toDTO(ClientResponse response) {
         return
-            clientResponse
+            response
                 .bodyToMono(String.class)
                 .map(body -> {
                     try {
@@ -80,6 +96,6 @@ public class MarvelApiClient {
                         throw new RuntimeException(IOe);
                     }
                 })
-                .flatMapIterable(response -> response.getMarvelCreators());
+                .flatMapIterable(dto -> dto.getMarvelCreators());
     }
 }

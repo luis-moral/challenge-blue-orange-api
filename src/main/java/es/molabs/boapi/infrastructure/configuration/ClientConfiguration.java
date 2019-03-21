@@ -15,8 +15,10 @@ public class ClientConfiguration {
 
     @Value("${marvel.api.base-url}")
     private String marvelBaseUrl;
-    @Value("${marvel.api.key}")
-    private String marvelApiKey;
+    @Value("${marvel.api.public-key}")
+    private String marvelPublicApiKey;
+    @Value("${marvel.api.private-key}")
+    private String marvelPrivateApiKey;
 
     @Value("${redis.host}")
     private String redisHost;
@@ -34,7 +36,7 @@ public class ClientConfiguration {
         FindCreatorQueryMapper queryMapper,
         ObjectMapper objectMapper
     ) {
-        return new MarvelApiClient(marvelBaseUrl, marvelApiKey, webClient, queryMapper, objectMapper);
+        return new MarvelApiClient(marvelBaseUrl, marvelPublicApiKey, marvelPrivateApiKey, webClient, queryMapper, objectMapper);
     }
 
     @Bean

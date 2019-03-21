@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorDTO;
-import es.molabs.boapi.infrastructure.repository.creator.MarvelCreatorDTO;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;

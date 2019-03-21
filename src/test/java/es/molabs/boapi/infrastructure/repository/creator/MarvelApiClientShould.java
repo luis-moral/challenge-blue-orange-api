@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -30,7 +31,9 @@ import java.util.stream.Collectors;
 public class MarvelApiClientShould {
 
     private static final int MARVEL_API_PORT;
-    private static final String MARVEL_API_KEY = "123456789asdfghjkl";
+    private static final String MARVEL_PUBLIC_API_KEY = "123456789asdfghjkl";
+    private static final String MARVEL_PRIVATE_API_KEY = "qwertyuiop12345";
+    private static final String MARVEL_HASH = DigestUtils.md5DigestAsHex(MARVEL_PRIVATE_API_KEY.getBytes());
 
     private static final MarvelCreatorDTO NONE = creatorDTO(7968, "", "-0001-11-30T00:00:00-0500", 0, 0);
     private static final MarvelCreatorDTO ARK = creatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", 1, 1);
@@ -40,6 +43,7 @@ public class MarvelApiClientShould {
         MARVEL_API_PORT = 20000 + new Random().nextInt(25000);
     }
 
+    private String hash;
     private WireMockServer marvelApiMock;
     private MarvelApiClient marvelApiClient;
 
@@ -51,7 +55,8 @@ public class MarvelApiClientShould {
         marvelApiClient =
             new MarvelApiClient(
                 "http://localhost:" + MARVEL_API_PORT,
-                MARVEL_API_KEY,
+                MARVEL_PUBLIC_API_KEY,
+                MARVEL_PRIVATE_API_KEY,
                 WebClient.create(),
                 new FindCreatorQueryMapper(),
                 new ObjectMapper()
@@ -182,7 +187,8 @@ public class MarvelApiClientShould {
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_COMICS, query.getComics());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_SERIES, query.getSeries());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_NOTES, query.getNotes());
-        map.put("apikey", WireMock.equalTo(MARVEL_API_KEY));
+        map.put("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY));
+        map.put("hash", WireMock.equalTo(MARVEL_HASH));
 
         if (query.getSortQuery() != null) {
             String sorting =
@@ -228,7 +234,7 @@ public class MarvelApiClientShould {
             .stubFor(
                 WireMock
                     .get(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
-                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
+                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
                     .willReturn(
                         WireMock
                             .aResponse()
@@ -244,7 +250,9 @@ public class MarvelApiClientShould {
             .verify(
                 WireMock
                     .getRequestedFor(WireMock.urlPathEqualTo("/v1/public/creators"))
-                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
+                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
+                    .withQueryParam("hash", WireMock.equalTo(MARVEL_HASH))
+                    .withQueryParam("ts", WireMock.matching("^(?!\\s*$).+"))
             );
     }
 
@@ -253,7 +261,9 @@ public class MarvelApiClientShould {
             .verify(
                 WireMock
                     .getRequestedFor(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
-                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_API_KEY))
+                    .withQueryParam("apikey", WireMock.equalTo(MARVEL_PUBLIC_API_KEY))
+                    .withQueryParam("hash", WireMock.equalTo(MARVEL_HASH))
+                    .withQueryParam("ts", WireMock.matching("^(?!\\s*$).+"))
             );
     }
 

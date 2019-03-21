@@ -28,4 +28,5 @@ redis:
 marvel:
   api:
     base-url: https://gateway.marvel.com
-    key: abcdefg12345
+    public-key: abcdefg12345
+    private-key: hijklmn6789
