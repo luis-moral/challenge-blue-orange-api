@@ -142,21 +142,31 @@ public class RedisCreatorNoteRepositoryShould {
 
     @Test public void
     edit_creator_note_by_id() {
+        String otherText = "Other text";
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");
-        String otherText = "Other text";
+        CreatorNote firstNoteUpdated = new CreatorNote(firstNote.getId(), firstNote.getCreatorId(), otherText);
         addCreatorNotes(firstNote, secondNote);
 
-        creatorNoteRepository.set(firstNote.getId(), otherText);
+        StepVerifier
+            .create(creatorNoteRepository.set(firstNote.getId(), otherText))
+            .expectNext(firstNoteUpdated)
+            .verifyComplete();
 
         StepVerifier
             .create(creatorNoteRepository.findById(firstNote.getId()))
-            .assertNext(note ->
-                    Assertions
-                        .assertThat(note.getText())
-                        .isEqualTo(otherText)
-                )
+            .expectNext(firstNoteUpdated)
             .verifyComplete();
+    }
+
+    @Test public void
+    fail_if_edit_a_note_that_does_no_exists() {
+        CreatorNote firstNote = new CreatorNote(1, 101, "First");
+        String otherText = "Other text";
+
+        StepVerifier
+            .create(creatorNoteRepository.set(firstNote.getId(), otherText))
+            .expectError();
     }
 
     @Test public void

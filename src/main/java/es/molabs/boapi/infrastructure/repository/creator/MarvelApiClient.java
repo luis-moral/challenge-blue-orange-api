@@ -104,6 +104,7 @@ public class MarvelApiClient {
                         throw new RuntimeException(IOe);
                     }
                 })
+                .filter(dto -> dto.getMarvelCreators() != null)
                 .flatMapIterable(dto -> dto.getMarvelCreators());
     }
 }

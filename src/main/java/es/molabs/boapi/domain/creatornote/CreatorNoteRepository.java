@@ -13,7 +13,7 @@ public interface CreatorNoteRepository {
 
     Mono<CreatorNote> add(int creatorId, String text);
 
-    void set(int id, String text);
+    Mono<CreatorNote> set(int id, String text);
 
     void deleteById(int id);
 }

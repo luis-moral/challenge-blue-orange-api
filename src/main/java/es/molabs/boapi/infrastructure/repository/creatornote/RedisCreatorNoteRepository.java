@@ -81,8 +81,14 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     }
 
     @Override
-    public void set(int noteId, String text) {
-        redis(client -> client.hset(key(noteId), "text", text));
+    public Mono<CreatorNote> set(int noteId, String text) {
+        return
+            findById(noteId)
+                .switchIfEmpty(Mono.error(new CreatorNoteNoteFoundException(noteId)))
+                .doOnNext(note ->
+                    redis(client -> client.hset(key(noteId), "text", text))
+                )
+                .flatMap(note -> findById(note.getId()));
     }
 
     @Override

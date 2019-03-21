@@ -27,10 +27,7 @@ public class CreatorNoteService {
     }
 
     public Mono<CreatorNote> editCreatorNote(int id, String text) {
-        return
-            Mono
-                .fromRunnable(() -> creatorNoteRepository.set(id, text))
-                .then(creatorNoteRepository.findById(id));
+        return creatorNoteRepository.set(id, text);
     }
 
     public void deleteCreatorNote(int id) {

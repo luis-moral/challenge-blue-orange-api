@@ -17,7 +17,7 @@ public class MarvelGetCreatorResponseDTO {
     }
 
     public List<MarvelCreatorDTO> getMarvelCreators() {
-        return data.getResults();
+        return data != null ? data.getResults() : null;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -87,7 +87,7 @@ public class CreatorNoteServiceShould {
         CreatorNote creatorNote = new CreatorNote(id, 101, editNoteDto.getText());
 
         Mockito
-            .when(creatorNoteRepository.findById(id))
+            .when(creatorNoteRepository.set(id, editNoteDto.getText()))
             .thenReturn(Mono.just(creatorNote));
 
         StepVerifier
@@ -98,10 +98,6 @@ public class CreatorNoteServiceShould {
         Mockito
             .verify(creatorNoteRepository, Mockito.times(1))
             .set(id, editNoteDto.getText());
-
-        Mockito
-            .verify(creatorNoteRepository, Mockito.times(1))
-            .findById(id);
     }
     
     @Test public void 
