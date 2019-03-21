@@ -23,7 +23,7 @@ public class CreatorHandler {
                 .ok()
                 .body(
                     creatorService
-                        .findCreators(queryMapper.from(request.queryParams()))
+                        .find(queryMapper.from(request.queryParams()))
                         .map(creator -> creatorMapper.toCreatorDTO(creator)),
                     CreatorDTO.class
                 );

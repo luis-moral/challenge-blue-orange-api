@@ -28,9 +28,10 @@ public class HandlerConfiguration {
     public CreatorNoteHandler creatorNoteHandler(
         CreatorNoteService creatorNoteService,
         CreatorNoteMapper creatorNoteMapper,
+        CreatorService creatorService,
         ObjectMapper objectMapper
     ) {
-        return new CreatorNoteHandler(creatorNoteService, creatorNoteMapper, objectMapper);
+        return new CreatorNoteHandler(creatorNoteService, creatorNoteMapper, creatorService, objectMapper);
     }
 
     @Bean

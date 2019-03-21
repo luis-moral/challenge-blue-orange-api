@@ -1,8 +1,11 @@
 package es.molabs.boapi.domain.creatornote;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CreatorNoteRepository {
+
+    Flux<CreatorNote> find(FindCreatorNoteQuery query);
 
     Mono<CreatorNote> findById(int id);
 

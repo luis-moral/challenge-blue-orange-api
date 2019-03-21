@@ -2,6 +2,7 @@ package es.molabs.boapi.infrastructure.repository.creatornote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
+import es.molabs.boapi.domain.creatornote.FindCreatorNoteQuery;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +48,27 @@ public class RedisCreatorNoteRepositoryShould {
         if (redisServer.isActive()) {
             redisServer.stop();
         }
+    }
+
+    @Test public void
+    find_creator_note_by_query() {
+        CreatorNote firstNote = new CreatorNote(1, 101, "First");
+        CreatorNote secondNote = new CreatorNote(2, 102, "First Again");
+        CreatorNote thirdNote = new CreatorNote(3, 103, "Third");
+        addCreatorNotes(firstNote, secondNote, thirdNote);
+
+        FindCreatorNoteQuery firstQuery = new FindCreatorNoteQuery(103);
+        FindCreatorNoteQuery secondQuery = new FindCreatorNoteQuery("First");
+
+        StepVerifier
+            .create(creatorNoteRepository.find(firstQuery))
+            .expectNext(thirdNote)
+            .verifyComplete();
+
+        StepVerifier
+            .create(creatorNoteRepository.find(secondQuery))
+            .expectNext(firstNote, secondNote)
+            .verifyComplete();
     }
 
     @Test public void

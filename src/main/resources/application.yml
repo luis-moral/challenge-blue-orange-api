@@ -9,11 +9,13 @@ server:
   port: 8080
 
 endpoint:
-  base-path: /api
+  base-path: /api/v1/public
   creators:
     path: ${endpoint.base-path}/creators
+  creators-notes:
+    path: ${endpoint.base-path}/creators/notes
   creator-note:
-    path: ${endpoint.base-path}/creator/note/{id}
+    path: ${endpoint.base-path}/creators/notes/{id}
   health:
     path: /status
 

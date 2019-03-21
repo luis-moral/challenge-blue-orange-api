@@ -2,6 +2,7 @@ package es.molabs.boapi.application;
 
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
+import es.molabs.boapi.domain.creatornote.FindCreatorNoteQuery;
 import es.molabs.boapi.infrastructure.handler.creatornote.AddCreatorNoteDTO;
 import es.molabs.boapi.infrastructure.handler.creatornote.EditCreatorNoteDTO;
 import org.junit.Before;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -24,6 +26,23 @@ public class CreatorNoteServiceShould {
     @Before
     public void setUp() {
         creatorNoteService = new CreatorNoteService(creatorNoteRepository);
+    }
+
+    @Test public void
+    find_notes_by_query() {
+        int id = 1;
+        CreatorNote firstCreatorNote = Mockito.mock(CreatorNote.class);
+        CreatorNote secondCreatorNote = Mockito.mock(CreatorNote.class);
+
+        FindCreatorNoteQuery query = new FindCreatorNoteQuery(id);
+
+        Mockito
+            .when(creatorNoteRepository.find(query))
+            .thenReturn(Flux.just(firstCreatorNote, secondCreatorNote));
+
+        StepVerifier
+            .create(creatorNoteService.find(query))
+            .expectNext(firstCreatorNote, secondCreatorNote);
     }
 
     @Test public void

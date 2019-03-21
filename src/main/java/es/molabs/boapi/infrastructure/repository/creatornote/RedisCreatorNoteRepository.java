@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
+import es.molabs.boapi.domain.creatornote.FindCreatorNoteQuery;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -13,9 +15,9 @@ import java.util.Optional;
 
 public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
-    private static final String KEY_CREATOR_NOTE_ID_GENERATOR = "creator_note:id";
-    private static final String KEY_CREATOR_NOTE = "creator_note_";
-    private static final String KEY_CREATOR_NOTE_BY_CREATOR = "creator_note_by_creator_";
+    private static final String KEY_CREATOR_NOTE_ID_GENERATOR = "creator_note_id_generator";
+    private static final String KEY_CREATOR_NOTE = "creator_note:";
+    private static final String KEY_CREATOR_NOTE_BY_CREATOR = "creator_note_by_creator:";
 
     private final ObjectMapper objectMapper;
     private final JedisPool redisPool;
@@ -23,6 +25,28 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     public RedisCreatorNoteRepository(JedisPool redisPool, ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.redisPool = redisPool;
+    }
+
+    @Override
+    public Flux<CreatorNote> find(FindCreatorNoteQuery query) {
+        return
+            Flux
+                .fromStream(() -> redis(client -> client.keys(KEY_CREATOR_NOTE + "*")).stream())
+                .filter(key -> filterByQuery(key, query))
+                .map(key -> getCreatorNote(key));
+    }
+
+    private boolean filterByQuery(String key, FindCreatorNoteQuery query) {
+        boolean filtered = false;
+
+        if (query.getCreatorId() != null) {
+            filtered = redis(client -> client.hget(key, "creatorId")).equals(Integer.toString(query.getCreatorId()));
+        }
+        else if (query.getText() != null) {
+            filtered = redis(client -> client.hget(key, "text")).startsWith(query.getText());
+        }
+
+        return filtered;
     }
 
     @Override

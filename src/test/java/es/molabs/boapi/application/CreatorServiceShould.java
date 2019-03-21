@@ -31,6 +31,21 @@ public class CreatorServiceShould {
     }
 
     @Test public void
+    find_creators_by_id() {
+        int id = 101;
+        Creator creator = creator(id);
+
+        Mockito
+            .when(creatorRepository.findById(id))
+            .thenReturn(Mono.just(creator));
+
+        StepVerifier
+            .create(creatorService.findById(id))
+            .expectNext(creator)
+            .verifyComplete();
+    }
+
+    @Test public void
     retrieve_creators_and_add_their_notes() {
         FindCreatorQuery query = FindCreatorQuery.EMPTY;
 
@@ -54,7 +69,7 @@ public class CreatorServiceShould {
             .thenReturn(Mono.empty());
 
         StepVerifier
-            .create(creatorService.findCreators(query))
+            .create(creatorService.find(query))
             .expectNext(firstCreatorWithNote, secondCreator)
             .verifyComplete();
 

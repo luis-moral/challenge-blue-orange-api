@@ -52,7 +52,7 @@ public class CreatorHandlerShould {
             .thenReturn(new FindCreatorQuery("1", "Some Name", "", "5", "6", "", null));
 
         Mockito
-            .when(creatorService.findCreators(Mockito.any()))
+            .when(creatorService.find(Mockito.any()))
             .thenReturn(Flux.just(new Creator(1, "Some Name", "123", 5, 6)));
 
         Mockito
@@ -111,7 +111,7 @@ public class CreatorHandlerShould {
 
         Mockito
             .verify(creatorService, Mockito.times(1))
-            .findCreators(Mockito.any());
+            .find(Mockito.any());
     }
 
     private void getCreators(Map<String, String> filters, List<String> sorting) {

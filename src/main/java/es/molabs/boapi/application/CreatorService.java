@@ -6,6 +6,7 @@ import es.molabs.boapi.domain.creator.FindCreatorQuery;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class CreatorService {
 
@@ -19,7 +20,11 @@ public class CreatorService {
         this.creatorNoteRepository = creatorNoteRepository;
     }
 
-    public Flux<Creator> findCreators(FindCreatorQuery query) {
+    public Mono<Creator> findById(int id) {
+        return creatorRepository.findById(id);
+    }
+
+    public Flux<Creator> find(FindCreatorQuery query) {
         return
             creatorRepository
                 .find(query)
