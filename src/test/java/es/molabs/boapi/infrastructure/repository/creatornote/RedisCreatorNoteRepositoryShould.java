@@ -131,6 +131,16 @@ public class RedisCreatorNoteRepositoryShould {
     }
 
     @Test public void
+    edit_current_note_if_already_exists_when_adding() {
+        CreatorNote firstAdd = creatorNoteRepository.add(101, "Some Text").block();
+        CreatorNote secondAdd = creatorNoteRepository.add(101, "Other Text").block();
+
+        Assertions
+            .assertThat(secondAdd.getId())
+            .isEqualTo(firstAdd.getId());
+    }
+
+    @Test public void
     edit_creator_note_by_id() {
         CreatorNote firstNote = new CreatorNote(1, 101, "First");
         CreatorNote secondNote = new CreatorNote(2, 102, "Second");

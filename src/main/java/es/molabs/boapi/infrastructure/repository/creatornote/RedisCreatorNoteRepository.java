@@ -70,8 +70,9 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     @Override
     public Mono<CreatorNote> add(int creatorId, String text) {
         return
-            Mono
-                .fromCallable(() -> generateNoteId())
+            findByCreatorId(creatorId)
+                .map(note -> note.getId())
+                .defaultIfEmpty(generateNoteId())
                 .doOnNext(id -> {
                     redis(client -> client.set(keyByCreator(creatorId), key(id)));
                     redis(client -> client.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text))));
