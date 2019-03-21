@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorDTO;
+import es.molabs.boapi.infrastructure.repository.creator.MarvelCreatorDTO;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -45,9 +46,12 @@ public class CreatorFeature {
 
 	private static final CreatorDTO NONE = new CreatorDTO(7968, "", "-0001-11-30T00:00:00-0500", 0, 0, null);
 	private static final CreatorDTO ARK = new CreatorDTO(6606, "A.R.K.", "2007-01-02T00:00:00-0500", 1, 1, null);
+	private static final CreatorDTO TIM_BRADSTREET = new CreatorDTO(1, "Tim Bradstreet" , "2010-12-09T11:41:29-0500", 100, 37, null);
 
 	@Value("${endpoint.creators.path}")
 	private String creatorsPath;
+	@Value("${endpoint.creator.path}")
+	private String creatorPath;
 	@Value("${marvel.api.base-url}")
 	private String marvelBaseUrl;
 	@Value("${marvel.api.key}")
@@ -87,6 +91,27 @@ public class CreatorFeature {
 		if (redisServer.isActive()) {
 			redisServer.stop();
 		}
+	}
+
+	@Test public void
+	clients_can_get_a_creator_by_id() throws IOException {
+		CreatorDTO creatorWithCustomNote =
+			new CreatorDTO(
+				TIM_BRADSTREET.getId(),
+				TIM_BRADSTREET.getFullName(),
+				TIM_BRADSTREET.getModified(),
+				TIM_BRADSTREET.getComics(),
+				TIM_BRADSTREET.getSeries(),
+				"Some custom note"
+			);
+
+		stubMarvelApi(creatorWithCustomNote.getId());
+
+		creatorNoteRepository
+			.add(creatorWithCustomNote.getId(), creatorWithCustomNote.getNote())
+			.block();
+
+		assertCreator(creatorWithCustomNote);
 	}
 
 	@Test public void
@@ -143,6 +168,22 @@ public class CreatorFeature {
 		assertCreators(filters, sorting, NONE, ARK);
 	}
 
+	private void stubMarvelApi(int id) throws IOException {
+		marvelApiMock
+			.stubFor(
+				WireMock
+					.get(WireMock.urlPathEqualTo("/v1/public/creators/" + id))
+					.withQueryParam("apikey", WireMock.equalTo(marvelApiKey))
+					.willReturn(
+						WireMock
+							.aResponse()
+							.withStatus(200)
+							.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+							.withBody(readFile("/creator/get_single_creator_by_id.json"))
+					)
+			);
+	}
+
 	private void stubMarvelApi() throws IOException {
 		marvelApiMock
 			.stubFor(
@@ -157,6 +198,21 @@ public class CreatorFeature {
 							.withBody(readFile("/creator/get_two_creators.json"))
 					)
 			);
+	}
+
+	private void assertCreator(CreatorDTO expectedCreator) {
+		webTestClient
+			.get()
+				.uri(builder -> builder.path(creatorPath).build(expectedCreator.getId()))
+			.exchange()
+				.expectStatus()
+					.isOk()
+				.expectBody(CreatorDTO.class)
+					.consumeWith(response ->
+						Assertions
+							.assertThat(response.getResponseBody())
+							.isEqualTo(expectedCreator)
+				);
 	}
 
 	private void assertCreators(Map<String, String> filters, List<String> sorting, CreatorDTO...expectedCreators) {

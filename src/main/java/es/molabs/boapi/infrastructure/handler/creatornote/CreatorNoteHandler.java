@@ -29,7 +29,7 @@ public class CreatorNoteHandler {
         this.objectMapper = objectMapper;
     }
 
-    public Mono<ServerResponse> getCreatorNotesFiltered(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getCreatorNotesByQuery(ServerRequest serverRequest) {
         return
             ServerResponse
                 .ok()

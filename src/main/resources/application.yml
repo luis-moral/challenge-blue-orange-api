@@ -12,6 +12,8 @@ endpoint:
   base-path: /api/v1/public
   creators:
     path: ${endpoint.base-path}/creators
+  creator:
+      path: ${endpoint.base-path}/creator/{id}
   creators-notes:
     path: ${endpoint.base-path}/creators/notes
   creator-note:

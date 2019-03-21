@@ -39,6 +39,10 @@ public class CreatorServiceShould {
             .when(creatorRepository.findById(id))
             .thenReturn(Mono.just(creator));
 
+        Mockito
+            .when(creatorNoteRepository.findByCreatorId(creator.getId()))
+            .thenReturn(Mono.empty());
+
         StepVerifier
             .create(creatorService.findById(id))
             .expectNext(creator)

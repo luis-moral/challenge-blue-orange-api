@@ -17,13 +17,25 @@ public class CreatorHandler {
         this.queryMapper = queryMapper;
     }
 
-    public Mono<ServerResponse> getCreators(ServerRequest request) {
+    public Mono<ServerResponse> getCreatorsByQuery(ServerRequest request) {
         return
             ServerResponse
                 .ok()
                 .body(
                     creatorService
                         .find(queryMapper.from(request.queryParams()))
+                        .map(creator -> creatorMapper.toCreatorDTO(creator)),
+                    CreatorDTO.class
+                );
+    }
+
+    public Mono<ServerResponse> getCreator(ServerRequest serverRequest) {
+        return
+            ServerResponse
+                .ok()
+                .body(
+                    creatorService
+                        .findById(Integer.parseInt(serverRequest.pathVariable("id")))
                         .map(creator -> creatorMapper.toCreatorDTO(creator)),
                     CreatorDTO.class
                 );

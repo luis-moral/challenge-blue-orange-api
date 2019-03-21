@@ -17,6 +17,9 @@ public class RouterConfiguration {
     @Value("${endpoint.creators.path}")
     private String creatorsPath;
 
+    @Value("${endpoint.creator.path}")
+    private String creatorPath;
+
     @Value("${endpoint.creators-notes.path}")
     private String creatorsNotesPath;
 
@@ -36,11 +39,15 @@ public class RouterConfiguration {
             RouterFunctions
                 .route(
                     RequestPredicates.GET(creatorsPath),
-                    creatorHandler::getCreators
+                    creatorHandler::getCreatorsByQuery
+                )
+                .andRoute(
+                    RequestPredicates.GET(creatorPath),
+                    creatorHandler::getCreator
                 )
                 .andRoute(
                     RequestPredicates.GET(creatorsNotesPath),
-                    creatorNoteHandler::getCreatorNotesFiltered
+                    creatorNoteHandler::getCreatorNotesByQuery
                 )
                 .andRoute(
                     RequestPredicates.GET(creatorNotePath),

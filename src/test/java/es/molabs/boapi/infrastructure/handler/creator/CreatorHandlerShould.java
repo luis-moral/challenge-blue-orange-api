@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,6 +35,8 @@ public class CreatorHandlerShould {
 
     @Value("${endpoint.creators.path}")
     private String creatorsPath;
+    @Value("${endpoint.creator.path}")
+    private String creatorPath;
 
     @Autowired
     private WebTestClient webTestClient;
@@ -58,6 +61,15 @@ public class CreatorHandlerShould {
         Mockito
             .when(creatorMapper.toCreatorDTO(Mockito.any()))
             .thenReturn(new CreatorDTO(1, "Some Name", "123", 5, 6, ""));
+    }
+
+    @Test public void
+    allow_clients_to_get_creator_by_id() {
+        Mockito
+            .when(creatorService.findById(1))
+            .thenReturn(Mono.just(new Creator(1, "Some Name", "123", 5, 6)));
+
+        getCreator(1);
     }
 
     @Test public void
@@ -112,6 +124,15 @@ public class CreatorHandlerShould {
         Mockito
             .verify(creatorService, Mockito.times(1))
             .find(Mockito.any());
+    }
+
+    private void getCreator(int id) {
+        webTestClient
+            .get()
+                .uri(builder -> builder.path(creatorPath).build(Integer.toString(id)))
+            .exchange()
+                .expectStatus()
+                    .isOk();
     }
 
     private void getCreators(Map<String, String> filters, List<String> sorting) {

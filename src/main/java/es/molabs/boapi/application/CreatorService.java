@@ -21,7 +21,15 @@ public class CreatorService {
     }
 
     public Mono<Creator> findById(int id) {
-        return creatorRepository.findById(id);
+        return
+            creatorRepository
+                .findById(id)
+                .flatMap(creator ->
+                    creatorNoteRepository
+                        .findByCreatorId(creator.getId())
+                        .defaultIfEmpty(EMPTY_NOTE)
+                        .map(note -> setNote(creator, note))
+                );
     }
 
     public Flux<Creator> find(FindCreatorQuery query) {
