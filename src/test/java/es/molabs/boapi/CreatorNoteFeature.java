@@ -91,11 +91,20 @@ public class CreatorNoteFeature {
     }
 
     @Test public void
-    clients_can_get_a_note_by_id() {
+    clients_can_get_a_note_by_id() throws IOException {
+        CreatorNoteDTO firstNoteDTO = new CreatorNoteDTO(1, 101, "Some Text", "Some Name");
+        CreatorNoteDTO secondNoteDTO = new CreatorNoteDTO(2, 102, "Other Text", "Other Name");
+
+        creatorNoteRepository.add(firstNoteDTO.getCreatorId(), firstNoteDTO.getText()).block();
+        creatorNoteRepository.add(secondNoteDTO.getCreatorId(), secondNoteDTO.getText()).block();
+
+        stubMarvelApi(firstNoteDTO.getCreatorId());
+
+        assertGetNote(firstNoteDTO);
     }
 
     @Test public void
-     clients_can_list_current_notes() throws IOException {
+    clients_can_list_current_notes() throws IOException {
         String fistFullName = "Some Name";
         String secondFullName = "Other Name";
 
@@ -156,6 +165,23 @@ public class CreatorNoteFeature {
             );
     }
 
+    private void assertGetNote(CreatorNoteDTO expectedNote) {
+        webTestClient
+            .get()
+                .uri(builder ->
+                    builder.path(creatorNotePath).build(expectedNote.getId())
+                )
+            .exchange()
+                .expectStatus()
+                    .isOk()
+                .expectBody(CreatorNoteDTO.class)
+                .consumeWith(response ->
+                    Assertions
+                        .assertThat(response.getResponseBody())
+                        .isEqualTo(expectedNote)
+            );
+    }
+
     private void assertListNotes(Integer creatorId, String text, CreatorNoteDTO...expectedNotes) {
         webTestClient
             .get()
@@ -172,7 +198,6 @@ public class CreatorNoteFeature {
                         .contains(expectedNotes)
             );
     }
-
     private void assertCreateNote(int creatorId, String text, int expectedNoteId) throws JsonProcessingException {
         AddCreatorNoteDTO addNoteDto = new AddCreatorNoteDTO(creatorId, text);
         CreatorNoteDTO noteDto = new CreatorNoteDTO(expectedNoteId, creatorId, text, null);

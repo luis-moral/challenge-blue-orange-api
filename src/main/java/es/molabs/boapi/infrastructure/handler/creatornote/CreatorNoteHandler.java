@@ -46,7 +46,19 @@ public class CreatorNoteHandler {
     }
 
     public Mono<ServerResponse> getCreatorNote(ServerRequest serverRequest) {
-        throw new UnsupportedOperationException();
+        return
+            ServerResponse
+                .ok()
+                .body(
+                    creatorNoteService
+                        .findById(Integer.parseInt(serverRequest.pathVariable("id")))
+                        .flatMap(creatorNote ->
+                            creatorService
+                                .findById(creatorNote.getCreatorId())
+                                .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
+                        ),
+                    CreatorNoteDTO.class
+                );
     }
 
     public Mono<ServerResponse> addCreatorNote(ServerRequest serverRequest) {

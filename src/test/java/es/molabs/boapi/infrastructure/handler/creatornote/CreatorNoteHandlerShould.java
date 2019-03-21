@@ -3,7 +3,10 @@ package es.molabs.boapi.infrastructure.handler.creatornote;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.application.CreatorNoteService;
+import es.molabs.boapi.application.CreatorService;
+import es.molabs.boapi.domain.creator.Creator;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
+import es.molabs.boapi.domain.creatornote.FindCreatorNoteQuery;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,16 +15,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class CreatorNoteHandlerShould {
 
+    @Value("${endpoint.creators-notes.path}")
+    private String creatorsNotesPath;
     @Value("${endpoint.creator-note.path}")
     private String creatorNotePath;
 
@@ -32,6 +41,68 @@ public class CreatorNoteHandlerShould {
 
     @MockBean
     private CreatorNoteService creatorNoteService;
+    @MockBean
+    private CreatorService creatorService;
+
+    @Test public void 
+    get_note_by_id() {
+        CreatorNote creatorNote = new CreatorNote(1, 101, "Some Text");
+        CreatorNoteDTO creatorNoteDTO = new CreatorNoteDTO(creatorNote.getId(), creatorNote.getCreatorId(), creatorNote.getText(), null);
+
+        Mockito
+            .when(creatorNoteService.findById(creatorNote.getId()))
+            .thenReturn(Mono.just(creatorNote));
+
+        Mockito
+            .when(creatorService.findById(creatorNote.getCreatorId()))
+            .thenReturn(Mono.just(Mockito.mock(Creator.class)));
+
+        webTestClient
+            .get()
+                .uri(builder ->
+                    builder.path(creatorNotePath).build(creatorNote.getId())
+                )
+                .exchange()
+                    .expectStatus()
+                        .isOk()
+                    .expectBody(CreatorNoteDTO.class)
+                    .consumeWith(response ->
+                        Assertions
+                            .assertThat(response.getResponseBody())
+                            .isEqualTo(creatorNoteDTO)
+                    );
+    }
+    
+    @Test public void
+    list_current_notes() {
+        CreatorNote creatorNote = new CreatorNote(1, 101, "Some Text");
+        CreatorNoteDTO creatorNoteDTO = new CreatorNoteDTO(creatorNote.getId(), creatorNote.getCreatorId(), creatorNote.getText(), null);
+
+        FindCreatorNoteQuery query = FindCreatorNoteQuery.EMPTY;
+
+        Mockito
+            .when(creatorNoteService.find(query))
+            .thenReturn(Flux.just(creatorNote));
+
+        Mockito
+            .when(creatorService.findById(creatorNote.getCreatorId()))
+            .thenReturn(Mono.just(Mockito.mock(Creator.class)));
+
+        webTestClient
+            .get()
+                .uri(builder ->
+                    builder.path(creatorsNotesPath).build()
+                )
+            .exchange()
+                .expectStatus()
+                    .isOk()
+                .expectBody(new ParameterizedTypeReference<List<CreatorNoteDTO>>() {})
+                    .consumeWith(response ->
+                        Assertions
+                            .assertThat(response.getResponseBody())
+                            .containsExactly(creatorNoteDTO)
+                    );
+    }
 
     @Test public void
     add_a_creator_note_to_a_creator() throws JsonProcessingException {
@@ -59,10 +130,6 @@ public class CreatorNoteHandlerShould {
                             .assertThat(response.getResponseBody())
                             .isEqualTo(creatorNoteDTO)
                     );
-
-        Mockito
-            .verify(creatorNoteService, Mockito.times(1))
-            .addCreatorNote(creatorId, text);
     }
 
     @Test public void
@@ -91,10 +158,6 @@ public class CreatorNoteHandlerShould {
                         .assertThat(response.getResponseBody())
                         .isEqualTo(creatorNoteDTO)
                 );
-
-        Mockito
-            .verify(creatorNoteService, Mockito.times(1))
-            .editCreatorNote(id, text);
     }
 
     @Test public void
