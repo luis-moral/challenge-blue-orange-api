@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import redis.clients.jedis.Jedis;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
@@ -25,7 +26,9 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @Override
     public Mono<CreatorNote> findById(int id) {
-        return getCreatorNote(key(id));
+        return
+            Mono
+                .fromCallable(() -> getCreatorNote(key(id)));
     }
 
     @Override
@@ -33,7 +36,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         return
             Mono
                 .fromCallable(() -> redisClient.get(keyByCreator(creatorId)))
-                .flatMap(this::getCreatorNote);
+                .map(this::getCreatorNote);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @Override
     public void deleteById(int id) {
-        CreatorNote note = findById(id).block();
+        CreatorNote note = getCreatorNote(key(id));
 
         if (note != null) {
             redisClient.del(keyByCreator(note.getCreatorId()), key(note.getId()));
@@ -77,12 +80,14 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         return id;
     }
 
-    private Mono<CreatorNote> getCreatorNote(String key) {
+    private CreatorNote getCreatorNote(String key) {
         return
-            Mono
-                .fromCallable(() -> redisClient.hgetAll(key))
+            Optional
+                .ofNullable(redisClient.hgetAll(key))
                 .filter(fields -> fields.size() > 0)
-                .map(this::toCreatorNote);
+                .map(this::toCreatorNote)
+                .orElse(null);
+
     }
 
     private CreatorNote toCreatorNote(Map<String, String> redisHash) {

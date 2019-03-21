@@ -131,7 +131,6 @@ public class RedisCreatorNoteRepositoryShould {
 
         StepVerifier
             .create(creatorNoteRepository.findById(firstNote.getId()))
-            .expectNextCount(0)
             .verifyComplete();
 
         StepVerifier
