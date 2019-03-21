@@ -74,7 +74,7 @@ public class MarvelApiClient {
                 .path(path)
                 .queryParams(
                     addRequiredParams(
-                        queryMapper.toMap(query))
+                        queryMapper.toMarvelApiQuery(query))
                     )
                 .build();
     }

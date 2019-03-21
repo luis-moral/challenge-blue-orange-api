@@ -12,13 +12,14 @@ public class FindCreatorQueryMapper {
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_FULL_NAME = "fullName";
+    public static final String FIELD_NAME_STARTS_WITH = "nameStartsWith";
     public static final String FIELD_MODIFIED = "modified";
     public static final String FIELD_COMICS = "comics";
     public static final String FIELD_SERIES = "series";
     public static final String FIELD_NOTES = "notes";
     public static final String FIELD_SORT_BY = "orderBy";
 
-    public FindCreatorQuery from(MultiValueMap<String, String> queryParams) {
+    public FindCreatorQuery fromQuery(MultiValueMap<String, String> queryParams) {
         return
             new FindCreatorQuery(
                 queryParams.getFirst(FIELD_ID),
@@ -31,10 +32,10 @@ public class FindCreatorQueryMapper {
             );
     }
 
-    public MultiValueMap<String, String> toMap(FindCreatorQuery query) {
+    public MultiValueMap<String, String> toMarvelApiQuery(FindCreatorQuery query) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         addFieldToMap(map, FIELD_ID, query.getId());
-        addFieldToMap(map, FIELD_FULL_NAME, query.getFullName());
+        addFieldToMap(map, FIELD_NAME_STARTS_WITH, query.getFullName());
         addFieldToMap(map, FIELD_MODIFIED, query.getModified());
         addFieldToMap(map, FIELD_COMICS, query.getComics());
         addFieldToMap(map, FIELD_SERIES, query.getSeries());

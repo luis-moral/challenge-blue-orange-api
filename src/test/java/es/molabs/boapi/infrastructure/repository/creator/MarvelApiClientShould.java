@@ -193,7 +193,7 @@ public class MarvelApiClientShould {
     private Map<String, StringValuePattern> buildQueryMap(FindCreatorQuery query, String timestamp) {
         Map<String, StringValuePattern> map = new HashMap<>();
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_ID, query.getId());
-        addFieldToMap(map, FindCreatorQueryMapper.FIELD_FULL_NAME, query.getFullName());
+        addFieldToMap(map, FindCreatorQueryMapper.FIELD_NAME_STARTS_WITH, query.getFullName());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_MODIFIED, query.getModified());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_COMICS, query.getComics());
         addFieldToMap(map, FindCreatorQueryMapper.FIELD_SERIES, query.getSeries());
