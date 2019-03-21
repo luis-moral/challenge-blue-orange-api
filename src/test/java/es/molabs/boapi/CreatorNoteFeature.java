@@ -96,16 +96,19 @@ public class CreatorNoteFeature {
 
     @Test public void
      clients_can_list_current_notes() throws IOException {
-        String firstCreatorFullName = "Some Name";
-        String secondCreatorFullName = "Other Name";
+        String fistFullName = "Some Name";
+        String secondFullName = "Other Name";
 
-        CreatorNoteDTO firstCreatorNoteDTO = new CreatorNoteDTO(1, 101, "Some Text", firstCreatorFullName);
-        CreatorNoteDTO secondCreatorNoteDTO = new CreatorNoteDTO(2, 102, "Other Text", secondCreatorFullName);
+        CreatorNoteDTO firstNoteDTO = new CreatorNoteDTO(1, 101, "Some Text", fistFullName);
+        CreatorNoteDTO secondNoteDTO = new CreatorNoteDTO(2, 102, "Other Text", secondFullName);
 
-        stubMarvelApi(firstCreatorNoteDTO.getCreatorId());
-        stubMarvelApi(secondCreatorNoteDTO.getCreatorId());
+        creatorNoteRepository.add(firstNoteDTO.getCreatorId(), firstNoteDTO.getText()).block();
+        creatorNoteRepository.add(secondNoteDTO.getCreatorId(), secondNoteDTO.getText()).block();
 
-        assertListNotes(null, null, firstCreatorNoteDTO, secondCreatorNoteDTO);
+        stubMarvelApi(firstNoteDTO.getCreatorId());
+        stubMarvelApi(secondNoteDTO.getCreatorId());
+
+        assertListNotes(null, null, firstNoteDTO, secondNoteDTO);
     }
 
     @Test public void
@@ -138,7 +141,7 @@ public class CreatorNoteFeature {
         marvelApiMock
             .stubFor(
                 WireMock
-                    .get(WireMock.urlMatching("/v1/public/creators/" + creatorId))
+                    .get(WireMock.urlPathEqualTo("/v1/public/creators/" + creatorId))
                     .withQueryParam("apikey", WireMock.equalTo(marvelApiKey))
                     .willReturn(
                         WireMock
