@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.domain.creatornote.CreatorNote;
 import es.molabs.boapi.domain.creatornote.CreatorNoteRepository;
-import es.molabs.boapi.infrastructure.handler.creatornote.AddCreatorNoteDTO;
-import es.molabs.boapi.infrastructure.handler.creatornote.EditCreatorNoteDTO;
 import reactor.core.publisher.Mono;
 import redis.clients.jedis.Jedis;
 
@@ -39,16 +37,16 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     }
 
     @Override
-    public void add(AddCreatorNoteDTO dto) {
+    public void add(int creatorId, String text) {
         int id = generateNoteId();
 
-        redisClient.set(keyByCreator(dto.getCreatorId()), key(id));
-        redisClient.hmset(key(id), toRedisHash(new CreatorNote(id, dto.getCreatorId(), dto.getText())));
+        redisClient.set(keyByCreator(creatorId), key(id));
+        redisClient.hmset(key(id), toRedisHash(new CreatorNote(id, creatorId, text)));
     }
 
     @Override
-    public void set(int noteId, EditCreatorNoteDTO note) {
-        redisClient.hset(key(noteId), "text", note.getText());
+    public void set(int noteId, String text) {
+        redisClient.hset(key(noteId), "text", text);
     }
 
     @Override

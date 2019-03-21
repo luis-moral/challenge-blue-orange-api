@@ -25,13 +25,13 @@ public class CreatorNoteServiceShould {
 
     @Test public void 
     add_creator_notes() {
-        AddCreatorNoteDTO addNoteDto = new AddCreatorNoteDTO(1, "Some text");
+        AddCreatorNoteDTO addNoteDto = new AddCreatorNoteDTO(101, "Some text");
 
         creatorNoteService.addCreatorNote(addNoteDto);
 
         Mockito
             .verify(creatorNoteRepository, Mockito.times(1))
-            .add(addNoteDto);
+            .add(addNoteDto.getCreatorId(), addNoteDto.getText());
     }
     
     @Test public void 
@@ -43,7 +43,7 @@ public class CreatorNoteServiceShould {
 
         Mockito
             .verify(creatorNoteRepository, Mockito.times(1))
-            .set(id, editNoteDto);
+            .set(id, editNoteDto.getText());
     }
     
     @Test public void 

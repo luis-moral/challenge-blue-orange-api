@@ -17,11 +17,11 @@ public class CreatorNoteService {
     }
 
     public void addCreatorNote(AddCreatorNoteDTO dto) {
-        creatorNoteRepository.add(dto);
+        creatorNoteRepository.add(dto.getCreatorId(), dto.getText());
     }
 
     public void editCreatorNote(int id, EditCreatorNoteDTO dto) {
-        creatorNoteRepository.set(id, dto);
+        creatorNoteRepository.set(id, dto.getText());
     }
 
     public void deleteCreatorNote(int id) {

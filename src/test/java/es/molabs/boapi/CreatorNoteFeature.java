@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
+import redis.embedded.RedisServer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,6 +31,7 @@ import java.net.URISyntaxException;
     classes = Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+@ActiveProfiles("test")
 public class CreatorNoteFeature {
 
     @Value("${endpoint.creator-note.path}")
@@ -37,6 +40,8 @@ public class CreatorNoteFeature {
     private String marvelBaseUrl;
     @Value("${marvel.api.key}")
     private String marvelApiKey;
+    @Value("${redis.port}")
+    private int redisPort;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -46,6 +51,7 @@ public class CreatorNoteFeature {
     private CreatorNoteRepository creatorNoteRepository;
 
     private WireMockServer marvelApiMock;
+    private RedisServer redisServer;
 
     @Before
     public void setUp() throws URISyntaxException {
@@ -57,12 +63,19 @@ public class CreatorNoteFeature {
 
         marvelApiMock = new WireMockServer(port);
         marvelApiMock.start();
+
+        redisServer = new RedisServer(redisPort);
+        redisServer.start();
     }
 
     @After
     public void tearDown() {
         if (marvelApiMock.isRunning()) {
             marvelApiMock.stop();
+        }
+
+        if (redisServer.isActive()) {
+            redisServer.stop();
         }
     }
 
@@ -102,7 +115,7 @@ public class CreatorNoteFeature {
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
-                    .isOk()
+                    .isCreated()
                 .expectBody(new ParameterizedTypeReference<CreatorNoteDTO>() {})
                     .consumeWith(response ->
                         Assertions
