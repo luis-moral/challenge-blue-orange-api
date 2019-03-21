@@ -13,7 +13,7 @@ endpoint:
   creators:
     path: ${endpoint.base-path}/creators
   creator:
-      path: ${endpoint.base-path}/creator/{id}
+    path: ${endpoint.base-path}/creators/{id}
   creators-notes:
     path: ${endpoint.base-path}/creators/notes
   creator-note:
@@ -23,7 +23,7 @@ endpoint:
 
 redis:
   host: "localhost"
-  port: 12305
+  port: 6379
 
 marvel:
   api:
