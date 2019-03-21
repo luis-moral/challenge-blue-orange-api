@@ -3,9 +3,12 @@ package es.molabs.boapi.infrastructure.handler.creatornote;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.application.CreatorNoteService;
+import es.molabs.boapi.domain.creatornote.CreatorNote;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,6 +30,8 @@ public class CreatorNoteHandlerShould {
     private WebTestClient webTestClient;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired @Spy
+    private CreatorNoteMapper creatorNoteMapper;
 
     @MockBean
     private CreatorNoteService creatorNoteService;
@@ -35,7 +41,13 @@ public class CreatorNoteHandlerShould {
         int creatorId = 101;
         String text = "Some text";
 
+        CreatorNoteDTO creatorNoteDTO = new CreatorNoteDTO(1, creatorId, text, null);
         AddCreatorNoteDTO addNoteDto = new AddCreatorNoteDTO(creatorId, text);
+        CreatorNote creatorNote = new CreatorNote(creatorNoteDTO.getId(), creatorNoteDTO.getCreatorId(), creatorNoteDTO.getText());
+
+        Mockito
+            .when(creatorNoteService.addCreatorNote(addNoteDto))
+            .thenReturn(Mono.just(creatorNote));
 
         webTestClient
             .post()
@@ -43,11 +55,21 @@ public class CreatorNoteHandlerShould {
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
-                    .isCreated();
+                    .isCreated()
+                .expectBody(CreatorNoteDTO.class)
+                    .consumeWith(response ->
+                        Assertions
+                            .assertThat(response.getResponseBody())
+                            .isEqualTo(creatorNoteDTO)
+                    );
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
             .addCreatorNote(addNoteDto);
+
+        Mockito
+            .verify(creatorNoteMapper, Mockito.times(1))
+            .toCreatorNoteDTO(creatorNote);
     }
 
     @Test public void
@@ -55,6 +77,9 @@ public class CreatorNoteHandlerShould {
         int id = 1;
         String text = "Some text";
 
+
+
+        CreatorNoteDTO creatorNoteDTO = new CreatorNoteDTO(1, 101, text, null);
         EditCreatorNoteDTO editNoteDTO = new EditCreatorNoteDTO(text);
 
         webTestClient
@@ -63,7 +88,13 @@ public class CreatorNoteHandlerShould {
                 .syncBody(objectMapper.writeValueAsString(editNoteDTO))
             .exchange()
                 .expectStatus()
-                    .isOk();
+                    .isOk()
+                .expectBody(CreatorNoteDTO.class)
+                .consumeWith(response ->
+                    Assertions
+                        .assertThat(response.getResponseBody())
+                        .isEqualTo(creatorNoteDTO)
+                );
 
         Mockito
             .verify(creatorNoteService, Mockito.times(1))
