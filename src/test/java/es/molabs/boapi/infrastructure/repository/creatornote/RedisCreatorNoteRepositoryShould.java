@@ -120,13 +120,13 @@ public class RedisCreatorNoteRepositoryShould {
         addCreatorNotes(firstNote, secondNote);
 
         StepVerifier
-            .create(creatorNoteRepository.findByCreatorId(firstNote.getCreatorId()))
-            .expectNext(firstNote)
+            .create(creatorNoteRepository.findByCreatorId(secondNote.getCreatorId()))
+            .expectNext(secondNote)
             .verifyComplete();
 
         StepVerifier
-            .create(creatorNoteRepository.findById(firstNote.getId()))
-            .expectNext(firstNote)
+            .create(creatorNoteRepository.findById(secondNote.getId()))
+            .expectNext(secondNote)
             .verifyComplete();
     }
 
