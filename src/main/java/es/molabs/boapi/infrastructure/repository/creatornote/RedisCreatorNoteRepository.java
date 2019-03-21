@@ -32,21 +32,24 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         return
             Flux
                 .fromStream(() -> redis(client -> client.keys(KEY_CREATOR_NOTE + "*")).stream())
-                .filter(key -> filterByQuery(key, query))
+                .filter(key -> filter(key, query))
                 .map(key -> getCreatorNote(key));
     }
 
-    private boolean filterByQuery(String key, FindCreatorNoteQuery query) {
-        boolean filtered = false;
+    private boolean filter(String key, FindCreatorNoteQuery query) {
+        boolean filter;
 
         if (query.getCreatorId() != null) {
-            filtered = redis(client -> client.hget(key, "creatorId")).equals(Integer.toString(query.getCreatorId()));
+            filter = redis(client -> client.hget(key, "creatorId")).equals(Integer.toString(query.getCreatorId()));
         }
         else if (query.getText() != null) {
-            filtered = redis(client -> client.hget(key, "text")).startsWith(query.getText());
+            filter = redis(client -> client.hget(key, "text")).startsWith(query.getText());
+        }
+        else {
+            filter = true;
         }
 
-        return filtered;
+        return filter;
     }
 
     @Override

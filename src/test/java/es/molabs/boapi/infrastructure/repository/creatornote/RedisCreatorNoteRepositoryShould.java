@@ -69,6 +69,11 @@ public class RedisCreatorNoteRepositoryShould {
             .create(creatorNoteRepository.find(secondQuery))
             .expectNext(firstNote, secondNote)
             .verifyComplete();
+
+        StepVerifier
+            .create(creatorNoteRepository.find(FindCreatorNoteQuery.EMPTY))
+            .expectNext(firstNote, secondNote, thirdNote)
+            .verifyComplete();
     }
 
     @Test public void
