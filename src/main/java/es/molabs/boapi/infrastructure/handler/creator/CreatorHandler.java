@@ -29,13 +29,13 @@ public class CreatorHandler {
                 );
     }
 
-    public Mono<ServerResponse> getCreator(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getCreator(ServerRequest request) {
         return
             ServerResponse
                 .ok()
                 .body(
                     creatorService
-                        .findById(Integer.parseInt(serverRequest.pathVariable("id")))
+                        .findById(Integer.parseInt(request.pathVariable("id")))
                         .map(creator -> creatorMapper.toCreatorDTO(creator)),
                     CreatorDTO.class
                 );
