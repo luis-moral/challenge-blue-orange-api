@@ -204,7 +204,7 @@ public class CreatorNoteFeature {
 
         webTestClient
             .post()
-                .uri(builder -> builder.path(creatorNotePath).build(creatorId))
+                .uri(builder -> builder.path(creatorsNotesPath).build(creatorId))
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
