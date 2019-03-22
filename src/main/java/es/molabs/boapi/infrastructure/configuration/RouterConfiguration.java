@@ -46,7 +46,7 @@ public class RouterConfiguration {
                     creatorNoteHandler::getCreatorNote
                 )
                 .andRoute(
-                    RequestPredicates.POST(creatorNotePath),
+                    RequestPredicates.POST(creatorsNotesPath),
                     creatorNoteHandler::addCreatorNote
                 )
                 .andRoute(

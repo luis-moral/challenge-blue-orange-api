@@ -69,6 +69,8 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @Override
     public Mono<CreatorNote> add(int creatorId, String text) {
+        validateText(text);
+
         return
             findByCreatorId(creatorId)
                 .map(note -> note.getId())
@@ -82,9 +84,11 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @Override
     public Mono<CreatorNote> set(int noteId, String text) {
+        validateText(text);
+
         return
             findById(noteId)
-                .switchIfEmpty(Mono.error(new CreatorNoteNoteFoundException(noteId)))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Creator note not found, id=" + noteId)))
                 .doOnNext(note ->
                     redis(client -> client.hset(key(noteId), "text", text))
                 )
@@ -123,6 +127,12 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
                 .map(this::toCreatorNote)
                 .orElse(null);
 
+    }
+
+    private void validateText(String text) {
+        if (text == null) {
+            throw new IllegalArgumentException("Text cannot be null");
+        }
     }
 
     private CreatorNote toCreatorNote(Map<String, String> redisHash) {

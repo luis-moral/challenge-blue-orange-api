@@ -20,9 +20,9 @@ endpoint:
   creator:
     path: ${endpoint.base-path}/creators/{id}
   creators-notes:
-    path: ${endpoint.base-path}/creators/notes
+    path: ${endpoint.base-path}/creators-notes
   creator-note:
-    path: ${endpoint.base-path}/creators/notes/{id}
+    path: ${endpoint.base-path}/creators-notes/{id}
   health:
     path: /status
 

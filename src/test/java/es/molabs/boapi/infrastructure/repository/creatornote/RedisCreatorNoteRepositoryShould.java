@@ -166,7 +166,7 @@ public class RedisCreatorNoteRepositoryShould {
 
         StepVerifier
             .create(creatorNoteRepository.set(firstNote.getId(), otherText))
-            .expectError();
+            .expectError(IllegalArgumentException.class);
     }
 
     @Test public void

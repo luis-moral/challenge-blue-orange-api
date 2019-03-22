@@ -9,6 +9,10 @@ group = 'es.molabs'
 version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+bootRun {
+	systemProperties = System.properties
+}
+
 repositories {
 	mavenCentral()
 }
