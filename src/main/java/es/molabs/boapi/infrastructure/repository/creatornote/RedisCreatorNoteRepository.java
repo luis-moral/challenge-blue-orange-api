@@ -33,7 +33,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
             Flux
                 .fromStream(() -> redis(client -> client.keys(KEY_CREATOR_NOTE + "*")).stream())
                 .filter(key -> filter(key, query))
-                .map(key -> getCreatorNote(key));
+                .flatMap(key -> Mono.justOrEmpty(getCreatorNote(key)));
     }
 
     private boolean filter(String key, FindCreatorNoteQuery query) {
@@ -56,7 +56,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
     public Mono<CreatorNote> findById(int id) {
         return
             Mono
-                .fromCallable(() -> getCreatorNote(key(id)));
+                .justOrEmpty(getCreatorNote(key(id)));
     }
 
     @Override
@@ -97,11 +97,10 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @Override
     public void deleteById(int id) {
-        CreatorNote note = getCreatorNote(key(id));
-
-        if (note != null) {
-            redis(client -> client.del(keyByCreator(note.getCreatorId()), key(note.getId())));
-        }
+        getCreatorNote(key(id))
+            .ifPresent(
+                note -> redis(client -> client.del(keyByCreator(note.getCreatorId()), key(note.getId())))
+            );
     }
 
     private int generateNoteId() {
@@ -119,13 +118,12 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         return id;
     }
 
-    private CreatorNote getCreatorNote(String key) {
+    private Optional<CreatorNote> getCreatorNote(String key) {
         return
             Optional
                 .ofNullable(redis(client-> client.hgetAll(key)))
                 .filter(fields -> fields.size() > 0)
-                .map(this::toCreatorNote)
-                .orElse(null);
+                .map(this::toCreatorNote);
     }
 
     private void validateText(String text) {
