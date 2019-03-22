@@ -64,7 +64,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
         return
             Mono
                 .fromCallable(() -> redis(client -> client.get(keyByCreator(creatorId))))
-                .map(this::getCreatorNote);
+                .flatMap(key -> Mono.justOrEmpty(getCreatorNote(key)));
     }
 
     @Override
@@ -126,7 +126,6 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
                 .filter(fields -> fields.size() > 0)
                 .map(this::toCreatorNote)
                 .orElse(null);
-
     }
 
     private void validateText(String text) {
