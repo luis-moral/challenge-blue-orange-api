@@ -156,6 +156,7 @@ public class RedisCreatorNoteRepository implements CreatorNoteRepository {
 
     @FunctionalInterface
     private interface RedisAction<T> {
+
         T doAction(Jedis client);
     }
 }

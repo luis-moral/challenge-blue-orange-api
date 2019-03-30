@@ -26,4 +26,4 @@
 /.nb-gradle/
 
 ### Logs ###
-application.log
+application.log*

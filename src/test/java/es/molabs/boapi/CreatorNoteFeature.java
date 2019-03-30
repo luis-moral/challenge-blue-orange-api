@@ -205,6 +205,7 @@ public class CreatorNoteFeature {
         webTestClient
             .post()
                 .uri(builder -> builder.path(creatorsNotesPath).build(creatorId))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
                 .syncBody(objectMapper.writeValueAsString(addNoteDto))
             .exchange()
                 .expectStatus()
@@ -224,6 +225,7 @@ public class CreatorNoteFeature {
         webTestClient
             .put()
                 .uri(builder -> builder.path(creatorNotePath).build(noteId))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
                 .syncBody(objectMapper.writeValueAsString(editDTO))
             .exchange()
                 .expectStatus()

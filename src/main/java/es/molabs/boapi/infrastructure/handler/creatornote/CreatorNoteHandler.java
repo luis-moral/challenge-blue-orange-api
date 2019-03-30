@@ -11,8 +11,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreatorNoteHandler {
@@ -64,8 +62,7 @@ public class CreatorNoteHandler {
     public Mono<ServerResponse> addCreatorNote(ServerRequest serverRequest) {
         return
             serverRequest
-                .bodyToMono(String.class)
-                .map(body -> readValue(body, AddCreatorNoteDTO.class))
+                .bodyToMono(AddCreatorNoteDTO.class)
                 .flatMap(dto -> creatorNoteService.addCreatorNote(dto.getCreatorId(), dto.getText()))
                 .map(creatorNoteMapper::toCreatorNoteDTO)
                 .flatMap(dto ->
@@ -78,8 +75,7 @@ public class CreatorNoteHandler {
     public Mono<ServerResponse> editCreatorNote(ServerRequest serverRequest) {
         return
             serverRequest
-                .bodyToMono(String.class)
-                .map(body -> readValue(body, EditCreatorNoteDTO.class))
+                .bodyToMono(EditCreatorNoteDTO.class)
                 .flatMap(dto -> creatorNoteService.editCreatorNote(Integer.parseInt(serverRequest.pathVariable("id")), dto.getText()))
                 .map(creatorNoteMapper::toCreatorNoteDTO)
                 .flatMap(dto ->
@@ -105,7 +101,7 @@ public class CreatorNoteHandler {
     private FindCreatorNoteQuery buildQuery(ServerRequest serverRequest) {
         String creatorId = serverRequest.queryParam("creatorId").orElse(null);
         String text = serverRequest.queryParam("text").orElse(null);
-        FindCreatorNoteQuery query = null;
+        FindCreatorNoteQuery query;
 
         if (creatorId != null) {
             query = new FindCreatorNoteQuery(Integer.parseInt(creatorId));
@@ -118,13 +114,5 @@ public class CreatorNoteHandler {
         }
 
         return query;
-    }
-
-    private<T> T readValue(String body, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(body, clazz);
-        } catch (IOException IOe) {
-            throw new RuntimeException(IOe);
-        }
     }
 }
