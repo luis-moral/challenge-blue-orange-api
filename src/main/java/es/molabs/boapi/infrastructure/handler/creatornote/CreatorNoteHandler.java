@@ -35,10 +35,10 @@ public class CreatorNoteHandler {
                         .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
                 )
                 .collectList()
-                .flatMap(dtos ->
+                .flatMap(dtoList ->
                     ServerResponse
                         .ok()
-                        .body(Flux.fromIterable(dtos), CreatorNoteDTO.class)
+                        .body(Flux.fromIterable(dtoList), CreatorNoteDTO.class)
                 );
     }
 

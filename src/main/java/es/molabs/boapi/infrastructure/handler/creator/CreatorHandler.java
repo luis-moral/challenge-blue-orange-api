@@ -3,6 +3,7 @@ package es.molabs.boapi.infrastructure.handler.creator;
 import es.molabs.boapi.application.CreatorService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class CreatorHandler {
@@ -19,25 +20,26 @@ public class CreatorHandler {
 
     public Mono<ServerResponse> getCreatorsByQuery(ServerRequest request) {
         return
-            ServerResponse
-                .ok()
-                .body(
-                    creatorService
-                        .find(queryMapper.fromQuery(request.queryParams()))
-                        .map(creator -> creatorMapper.toCreatorDTO(creator)),
-                    CreatorDTO.class
+            creatorService
+                .find(queryMapper.fromQuery(request.queryParams()))
+                .map(creator -> creatorMapper.toCreatorDTO(creator))
+                .collectList()
+                .flatMap(dtoList ->
+                    ServerResponse
+                        .ok()
+                        .body(Flux.fromIterable(dtoList), CreatorDTO.class)
                 );
     }
 
     public Mono<ServerResponse> getCreator(ServerRequest request) {
         return
-            ServerResponse
-                .ok()
-                .body(
-                    creatorService
-                        .findById(Integer.parseInt(request.pathVariable("id")))
-                        .map(creator -> creatorMapper.toCreatorDTO(creator)),
-                    CreatorDTO.class
+            creatorService
+                .findById(Integer.parseInt(request.pathVariable("id")))
+                .map(creator -> creatorMapper.toCreatorDTO(creator))
+                .flatMap(dto ->
+                    ServerResponse
+                        .ok()
+                        .body(Mono.just(dto), CreatorDTO.class)
                 );
     }
 }
