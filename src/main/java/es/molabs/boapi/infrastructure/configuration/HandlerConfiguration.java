@@ -1,6 +1,5 @@
 package es.molabs.boapi.infrastructure.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.application.CreatorNoteService;
 import es.molabs.boapi.application.CreatorService;
 import es.molabs.boapi.infrastructure.handler.creator.CreatorHandler;
@@ -28,10 +27,9 @@ public class HandlerConfiguration {
     public CreatorNoteHandler creatorNoteHandler(
         CreatorNoteService creatorNoteService,
         CreatorNoteMapper creatorNoteMapper,
-        CreatorService creatorService,
-        ObjectMapper objectMapper
+        CreatorService creatorService
     ) {
-        return new CreatorNoteHandler(creatorNoteService, creatorNoteMapper, creatorService, objectMapper);
+        return new CreatorNoteHandler(creatorNoteService, creatorNoteMapper, creatorService);
     }
 
     @Bean

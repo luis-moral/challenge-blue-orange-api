@@ -2,13 +2,13 @@ package es.molabs.boapi.infrastructure.handler.creatornote;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import es.molabs.boapi.application.CreatorNoteService;
 import es.molabs.boapi.application.CreatorService;
 import es.molabs.boapi.domain.creatornote.FindCreatorNoteQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -18,44 +18,43 @@ public class CreatorNoteHandler {
     private final CreatorNoteService creatorNoteService;
     private final CreatorNoteMapper creatorNoteMapper;
     private final CreatorService creatorService;
-    private final ObjectMapper objectMapper;
 
-    public CreatorNoteHandler(CreatorNoteService creatorNoteService, CreatorNoteMapper creatorNoteMapper, CreatorService creatorService, ObjectMapper objectMapper) {
+    public CreatorNoteHandler(CreatorNoteService creatorNoteService, CreatorNoteMapper creatorNoteMapper, CreatorService creatorService) {
         this.creatorNoteService = creatorNoteService;
         this.creatorNoteMapper = creatorNoteMapper;
         this.creatorService = creatorService;
-        this.objectMapper = objectMapper;
     }
 
     public Mono<ServerResponse> getCreatorNotesByQuery(ServerRequest serverRequest) {
         return
-            ServerResponse
-                .ok()
-                .body(
-                    creatorNoteService
-                        .find(buildQuery(serverRequest))
-                        .flatMap(creatorNote ->
-                            creatorService
-                                .findById(creatorNote.getCreatorId())
-                                .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
-                        ),
-                    CreatorNoteDTO.class
+            creatorNoteService
+                .find(buildQuery(serverRequest))
+                .flatMap(creatorNote ->
+                    creatorService
+                        .findById(creatorNote.getCreatorId())
+                        .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
+                )
+                .collectList()
+                .flatMap(dtos ->
+                    ServerResponse
+                        .ok()
+                        .body(Flux.fromIterable(dtos), CreatorNoteDTO.class)
                 );
     }
 
     public Mono<ServerResponse> getCreatorNote(ServerRequest serverRequest) {
         return
-            ServerResponse
-                .ok()
-                .body(
-                    creatorNoteService
-                        .findById(Integer.parseInt(serverRequest.pathVariable("id")))
-                        .flatMap(creatorNote ->
-                            creatorService
-                                .findById(creatorNote.getCreatorId())
-                                .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
-                        ),
-                    CreatorNoteDTO.class
+            creatorNoteService
+                .findById(Integer.parseInt(serverRequest.pathVariable("id")))
+                .flatMap(creatorNote ->
+                    creatorService
+                        .findById(creatorNote.getCreatorId())
+                        .map(creator -> creatorNoteMapper.toCreatorNoteDTO(creatorNote, creator.getFullName()))
+                )
+                .flatMap(dto ->
+                    ServerResponse
+                        .ok()
+                        .body(Mono.just(dto), CreatorNoteDTO.class)
                 );
     }
 
